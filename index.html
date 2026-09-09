@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulário de Aquisição — TEF / SMARTPOS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh;
+      padding: 28px 16px 48px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #fff;
+      padding: 36px 40px 32px;
+      border-radius: 16px 16px 0 0;
+      text-align: center;
+    }
+    .header h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; }
+    .header p  { font-size: 0.93rem; opacity: 0.85; line-height: 1.5; }
+
+    /* Card */
+    .form-card {
+      background: #fff;
+      border-radius: 0 0 16px 16px;
+      padding: 40px;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.08);
+    }
+
+    /* Section */
+    .section { margin-bottom: 36px; }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #e8edf5;
+      margin-bottom: 22px;
+    }
+    .step-badge {
+      width: 28px; height: 28px;
+      background: #1e3a8a;
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* Fields */
+    .field-group      { display: grid; gap: 16px; }
+    .field-group.cols { grid-template-columns: 1fr 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    .field label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #4b5563;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field label .req { color: #dc2626; margin-left: 2px; }
+
+    .field input,
+    .field select {
+      padding: 11px 14px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #1a202c;
+      background: #f9fafb;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+    .field input::placeholder { color: #9ca3af; }
+
+    /* Product Picker */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .product-option { position: relative; }
+    .product-option input[type="radio"] {
+      position: absolute; opacity: 0; width: 0; height: 0;
+    }
+    .product-option label {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px;
+      padding: 28px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: center;
+      background: #f9fafb;
+      transition: all 0.2s;
+    }
+    .product-option label:hover { border-color: #93c5fd; background: #eff6ff; }
+    .product-option input:checked + label {
+      border-color: #2563eb;
+      background: #eff6ff;
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+    }
+    .product-icon { font-size: 2.2rem; }
+    .product-name { font-size: 1.15rem; font-weight: 800; color: #1e3a8a; }
+    .product-desc { font-size: 0.78rem; color: #6b7280; }
+
+    /* Info Box (blue) */
+    .info-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-left: 5px solid #2563eb;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      font-size: 0.88rem;
+      color: #1e40af;
+      line-height: 1.6;
+    }
+    .info-box strong { display: block; margin-bottom: 8px; font-size: 0.92rem; }
+    .info-box ul { list-style: none; padding: 0; }
+    .info-box ul li { padding: 3px 0; }
+    .info-box ul li::before { content: '→ '; font-weight: 700; }
+
+    /* Subsection */
+    .subsection {
+      background: #f8fafc;
+      border: 1px solid #e8edf5;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .subsection-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 18px;
+    }
+
+    /* Radio Buttons */
+    .radio-group { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
+    .radio-opt { position: relative; }
+    .radio-opt input[type="radio"] {
+      position: absolute; opacity: 0; width: 0; height: 0;
+    }
+    .radio-opt label {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+      transition: all 0.2s;
+      background: #f9fafb;
+    }
+    .radio-opt label:hover { border-color: #93c5fd; background: #eff6ff; }
+    .radio-opt input:checked + label {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+
+    /* Warning Box (yellow) */
+    .warning-box {
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      border-left: 5px solid #f59e0b;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-top: 16px;
+    }
+    .warning-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .warning-lead { font-size: 0.9rem; color: #78350f; margin-bottom: 12px; line-height: 1.6; }
+    .warning-label { font-size: 0.88rem; font-weight: 700; color: #92400e; margin-bottom: 6px; }
+    .warning-list { list-style: none; padding: 0; margin-bottom: 14px; }
+    .warning-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 5px 0; font-size: 0.88rem; color: #78350f; line-height: 1.5;
+    }
+    .warning-note {
+      font-size: 0.87rem; color: #92400e;
+      background: rgba(245,158,11,0.12);
+      border-radius: 8px; padding: 12px 14px;
+      line-height: 1.6; margin-bottom: 16px;
+    }
+    .warning-confirm {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(245,158,11,0.08);
+      border-radius: 8px; padding: 12px 14px;
+    }
+    .warning-confirm input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: #d97706;
+      flex-shrink: 0; margin-top: 2px; cursor: pointer;
+    }
+    .warning-confirm label {
+      font-size: 0.88rem; font-weight: 600;
+      color: #92400e; cursor: pointer; line-height: 1.5;
+    }
+
+    /* App Warning (orange) */
+    .app-warning {
+      background: #fff7ed;
+      border: 1.5px solid #fdba74;
+      border-left: 5px solid #f97316;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 16px;
+    }
+    .app-warning-title {
+      font-size: 0.95rem; font-weight: 700; color: #9a3412;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .app-warning-body { font-size: 0.88rem; color: #9a3412; line-height: 1.7; }
+
+    /* Divider */
+    hr { border: none; border-top: 1px solid #e5e7eb; margin: 30px 0; }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+      transition: all 0.2s;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37,99,235,0.38);
+    }
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Footer */
+    .footer { text-align: center; margin-top: 24px; font-size: 0.8rem; color: #9ca3af; }
+
+    /* Hidden */
+    .hidden { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 580px) {
+      body { padding: 0 0 40px; }
+      .header { border-radius: 0; padding: 28px 20px; }
+      .header h1 { font-size: 1.25rem; }
+      .form-card { border-radius: 0; padding: 24px 18px; }
+      .product-grid { grid-template-columns: 1fr 1fr; }
+      .field-group.cols { grid-template-columns: 1fr; }
+      .radio-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>📋 Formulário de Aquisição</h1>
+    <p>Preencha os dados abaixo para solicitar a instalação do seu equipamento de pagamento</p>
+  </div>
+
+  <div class="form-card">
+    <form
+      id="mainForm"
+      name="aquisicao-tef-smartpos"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+    >
+      <input type="hidden" name="form-name" value="aquisicao-tef-smartpos" />
+      <input type="hidden" name="bot-field" />
+
+      <!-- SEÇÃO 1 — Tipo de Equipamento -->
+      <div class="section">
+        <div class="section-title">
+          <div class="step-badge">1</div>
+          Tipo de Equipamento
+        </div>
+        <p style="font-size:0.88rem;color:#6b7280;margin-bottom:14px;">
+          Selecione o produto que você vai utilizar:
+        </p>
+        <div class="product-grid">
+          <div class="product-option">
+            <input type="radio" id="opt-tef" name="produto" value="TEF" required />
+            <label for="opt-tef">
+              <span class="product-icon">🖥️</span>
+              <span class="product-name">TEF</span>
+              <span class="product-desc">Terminal integrado ao computador / caixa</span>
+            </label>
+          </div>
+          <div class="product-option">
+            <input type="radio" id="opt-smartpos" name="produto" value="SMARTPOS" />
+            <label for="opt-smartpos">
+              <span class="product-icon">📱</span>
+              <span class="product-name">SMARTPOS</span>
+              <span class="product-desc">Maquininha inteligente com Android</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- BLOCO TEF -->
+      <div id="section-tef" class="hidden">
+
+        <!-- Seção 2 — Equipamento e Adquirente -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">2</div>
+            Equipamento e Adquirente
+          </div>
+
+          <div class="field-group cols">
+            <div class="field">
+              <label>Quantidade de Equipamentos <span class="req">*</span></label>
+              <input type="number" name="tef-quantidade" id="tef-qtd" min="1" placeholder="Ex: 2" disabled />
+            </div>
+            <div class="field">
+              <label>Adquirente <span class="req">*</span></label>
+              <input type="text" name="tef-adquirente" id="tef-adq" placeholder="Ex: REDE, CIELO, STONE..." disabled />
+            </div>
+          </div>
+
+          <div class="info-box" style="margin-top:20px;">
+            <strong>📌 Solicite os seguintes códigos diretamente à sua adquirente antes de prosseguir:</strong>
+            <ul>
+              <li>Número de Afiliação</li>
+              <li>Número Lógico</li>
+            </ul>
+          </div>
+
+          <div class="field-group cols">
+            <div class="field">
+              <label>Número de Afiliação <span class="req">*</span></label>
+              <input type="text" name="tef-afiliacao" id="tef-afil" placeholder="Número de afiliação" disabled />
+            </div>
+            <div class="field">
+              <label>Número Lógico <span class="req">*</span></label>
+              <input type="text" name="tef-logico" id="tef-log" placeholder="Número lógico" disabled />
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 3 — Dados da Loja -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">3</div>
+            Dados da Loja
+          </div>
+
+          <div class="field-group">
+            <div class="field-group cols">
+              <div class="field">
+                <label>CNPJ <span class="req">*</span></label>
+                <input type="text" name="tef-cnpj" id="tef-cnpj"
+                       placeholder="00.000.000/0000-00" maxlength="18" disabled />
+              </div>
+              <div class="field">
+                <label>UF <span class="req">*</span></label>
+                <select name="tef-uf" id="tef-uf" disabled>
+                  <option value="">Selecione</option>
+                  <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                  <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                  <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                  <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                  <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                  <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                  <option>SP</option><option>SE</option><option>TO</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Razão Social <span class="req">*</span></label>
+              <input type="text" name="tef-razao" id="tef-razao" placeholder="Razão social da empresa" disabled />
+            </div>
+            <div class="field">
+              <label>Nome Fantasia</label>
+              <input type="text" name="tef-fantasia" id="tef-fantasia" placeholder="Nome fantasia (se houver)" disabled />
+            </div>
+            <div class="field">
+              <label>Endereço <span class="req">*</span></label>
+              <input type="text" name="tef-endereco" id="tef-end" placeholder="Rua, número, complemento" disabled />
+            </div>
+            <div class="field-group cols">
+              <div class="field">
+                <label>Bairro <span class="req">*</span></label>
+                <input type="text" name="tef-bairro" id="tef-bairro" placeholder="Bairro" disabled />
+              </div>
+              <div class="field">
+                <label>Cidade <span class="req">*</span></label>
+                <input type="text" name="tef-cidade" id="tef-cidade" placeholder="Cidade" disabled />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 4 — Responsável pela Loja -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">4</div>
+            Responsável pela Loja
+          </div>
+
+          <div class="subsection">
+            <div class="subsection-title">👤 Pessoa responsável pela gestão da loja</div>
+            <div class="field-group">
+              <div class="field">
+                <label>Nome Completo <span class="req">*</span></label>
+                <input type="text" name="loja-nome" id="loja-nome" placeholder="Nome do responsável" disabled />
+              </div>
+              <div class="field-group cols">
+                <div class="field">
+                  <label>E-mail <span class="req">*</span></label>
+                  <input type="email" name="loja-email" id="loja-email" placeholder="email@empresa.com.br" disabled />
+                </div>
+                <div class="field">
+                  <label>Telefone <span class="req">*</span></label>
+                  <input type="tel" name="loja-telefone" id="loja-tel"
+                         placeholder="(00) 00000-0000" maxlength="15" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 5 — Responsável pelo Site do TEF -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">5</div>
+            Responsável pelo Site do TEF
+          </div>
+
+          <p style="font-size:0.9rem;color:#374151;line-height:1.65;margin-bottom:18px;">
+            O <strong>site do TEF</strong> é a plataforma utilizada para consultar
+            <strong>relatórios de vendas</strong>, emitir <strong>extratos de transações</strong>
+            e acompanhar todo o <strong>fluxo de pagamentos</strong> da sua loja.
+            É importante que a pessoa com acesso esteja disponível quando necessário.
+          </p>
+
+          <p style="font-size:0.9rem;font-weight:700;color:#374151;margin-bottom:4px;">
+            O responsável pelo site do TEF é o mesmo responsável pela loja?
+          </p>
+
+          <div class="radio-group">
+            <div class="radio-opt">
+              <input type="radio" id="mesmo-sim" name="mesmo-responsavel" value="SIM" />
+              <label for="mesmo-sim">✅ Sim, é a mesma pessoa</label>
+            </div>
+            <div class="radio-opt">
+              <input type="radio" id="mesmo-nao" name="mesmo-responsavel" value="NÃO" />
+              <label for="mesmo-nao">👥 Não, são pessoas diferentes</label>
+            </div>
+          </div>
+
+          <!-- Aviso amarelo — SIM -->
+          <div class="warning-box hidden" id="warning-mesmo">
+            <div class="warning-title">⚠️ Atenção — Verifique antes de continuar</div>
+            <p class="warning-lead">
+              Você informou que o responsável pelo site do TEF é a
+              <strong>mesma pessoa responsável pela loja</strong>.
+            </p>
+            <p class="warning-label">O site do TEF é utilizado para:</p>
+            <ul class="warning-list">
+              <li>📊 Consulta de <strong>relatórios de vendas</strong></li>
+              <li>🧾 Emissão de <strong>extratos de transações</strong></li>
+              <li>🔄 Acompanhamento do <strong>fluxo de TEF</strong> — autorizações, cancelamentos e conciliações</li>
+              <li>🛠️ Resolução de <strong>situações operacionais urgentes</strong></li>
+            </ul>
+            <div class="warning-note">
+              Se essa pessoa estiver <strong>ausente, de férias ou indisponível por qualquer motivo</strong>,
+              ninguém mais terá acesso ao portal para consultar informações ou resolver problemas —
+              o que pode <strong>impactar diretamente a operação da sua loja</strong>.<br /><br />
+              Caso exista outra pessoa que possa assumir esse acesso, recomendamos
+              cadastrá-la como responsável pelo site do TEF.
+            </div>
+            <div class="warning-confirm">
+              <input type="checkbox" id="confirmar-mesmo" name="confirmar-mesmo" value="Confirmado" />
+              <label for="confirmar-mesmo">
+                Estou ciente dos riscos e desejo continuar utilizando o mesmo responsável para a loja e para o site do TEF.
+              </label>
+            </div>
+          </div>
+
+          <!-- Campos do Portal — NÃO -->
+          <div class="subsection hidden" id="campos-portal">
+            <div class="subsection-title">🌐 Pessoa responsável pelo acesso ao site do TEF</div>
+            <div class="field-group">
+              <div class="field">
+                <label>Nome Completo <span class="req">*</span></label>
+                <input type="text" name="portal-nome" id="portal-nome" placeholder="Nome do responsável" disabled />
+              </div>
+              <div class="field-group cols">
+                <div class="field">
+                  <label>E-mail <span class="req">*</span></label>
+                  <input type="email" name="portal-email" id="portal-email" placeholder="email@empresa.com.br" disabled />
+                </div>
+                <div class="field">
+                  <label>Telefone <span class="req">*</span></label>
+                  <input type="tel" name="portal-telefone" id="portal-tel"
+                         placeholder="(00) 00000-0000" maxlength="15" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /section-tef -->
+
+      <!-- BLOCO SMARTPOS -->
+      <div id="section-smartpos" class="hidden">
+
+        <!-- Seção 2 — Dados da Empresa -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">2</div>
+            Dados da Empresa
+          </div>
+
+          <div class="field-group">
+            <div class="field">
+              <label>CNPJ <span class="req">*</span></label>
+              <input type="text" name="spos-cnpj" id="spos-cnpj"
+                     placeholder="00.000.000/0000-00" maxlength="18" disabled />
+            </div>
+            <div class="field">
+              <label>Razão Social <span class="req">*</span></label>
+              <input type="text" name="spos-razao" id="spos-razao" placeholder="Razão social da empresa" disabled />
+            </div>
+            <div class="field">
+              <label>Nome Fantasia</label>
+              <input type="text" name="spos-fantasia" id="spos-fantasia" placeholder="Nome fantasia (se houver)" disabled />
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 3 — Dados da Maquininha -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">3</div>
+            Dados da Maquininha
+          </div>
+
+          <div class="field-group">
+            <div class="field">
+              <label>Número de Série <span class="req">*</span></label>
+              <input type="text" name="spos-serie" id="spos-serie"
+                     placeholder="Número de série (encontrado na etiqueta da maquininha)" disabled />
+            </div>
+            <div class="field">
+              <label>Modelo da Maquininha <span class="req">*</span></label>
+              <input type="text" name="spos-modelo" id="spos-modelo"
+                     placeholder="Ex: Sunmi P2, PAX A920, Gertec GPOS 700..." disabled />
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 4 — Aplicativo -->
+        <div class="section">
+          <div class="section-title">
+            <div class="step-badge">4</div>
+            Aplicativo AppSuperTEF
+          </div>
+
+          <p style="font-size:0.9rem;color:#374151;line-height:1.65;margin-bottom:18px;">
+            O aplicativo <strong>AppSuperTEF</strong> é obrigatório para o funcionamento correto
+            do SMARTPOS e deve estar instalado antes da ativação.
+          </p>
+
+          <p style="font-size:0.9rem;font-weight:700;color:#374151;margin-bottom:4px;">
+            O aplicativo "AppSuperTEF" já está instalado na sua maquininha?
+          </p>
+
+          <div class="radio-group">
+            <div class="radio-opt">
+              <input type="radio" id="app-sim" name="app-instalado" value="SIM" />
+              <label for="app-sim">✅ Sim, já está instalado</label>
+            </div>
+            <div class="radio-opt">
+              <input type="radio" id="app-nao" name="app-instalado" value="NÃO" />
+              <label for="app-nao">❌ Não, ainda não instalei</label>
+            </div>
+          </div>
+
+          <!-- Aviso laranja — NÃO -->
+          <div class="app-warning hidden" id="warning-app">
+            <div class="app-warning-title">📥 Como instalar o AppSuperTEF</div>
+            <div class="app-warning-body">
+              Acesse a <strong>loja de aplicativos</strong> da sua maquininha e faça o download
+              do aplicativo <strong>"AppSuperTEF"</strong>.<br /><br />
+              Caso ocorra algum erro ou dificuldade durante o download, entre em contato
+              diretamente com o <strong>suporte da sua adquirente</strong> para solucionar
+              a situação antes de prosseguir com o cadastro.
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /section-smartpos -->
+
+      <!-- Botão de Envio -->
+      <div id="submit-area" class="hidden">
+        <hr />
+        <button type="submit" class="submit-btn">
+          📤 Enviar Solicitação
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="footer">Formulário de Aquisição TEF / SMARTPOS</div>
+
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+
+  function show(el) { el.classList.remove('hidden'); }
+  function hide(el) { el.classList.add('hidden'); }
+
+  function setSection(id, enabled) {
+    $(id).querySelectorAll('input, select').forEach(f => f.disabled = !enabled);
+  }
+
+  /* Máscaras */
+  function maskCNPJ(v) {
+    v = v.replace(/\D/g, '').slice(0, 14);
+    if (v.length > 12) return v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})$/, '$1.$2.$3/$4-$5');
+    if (v.length > 8)  return v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4})$/, '$1.$2.$3/$4');
+    if (v.length > 5)  return v.replace(/^(\d{2})(\d{3})(\d{0,3})$/, '$1.$2.$3');
+    if (v.length > 2)  return v.replace(/^(\d{2})(\d{0,3})$/, '$1.$2');
+    return v;
+  }
+  function maskPhone(v) {
+    v = v.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10) return v.replace(/^(\d{2})(\d{5})(\d{0,4})$/, '($1) $2-$3');
+    if (v.length > 6)  return v.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
+    if (v.length > 2)  return v.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
+    return v;
+  }
+
+  ['tef-cnpj','spos-cnpj'].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener('input', e => e.target.value = maskCNPJ(e.target.value));
+  });
+  ['loja-tel','portal-tel'].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener('input', e => e.target.value = maskPhone(e.target.value));
+  });
+
+  /* Seleção de produto */
+  document.querySelectorAll('input[name="produto"]').forEach(r => {
+    r.addEventListener('change', function () {
+      const isTEF  = this.value === 'TEF';
+      const isSPOS = this.value === 'SMARTPOS';
+
+      $('section-tef').classList.toggle('hidden', !isTEF);
+      $('section-smartpos').classList.toggle('hidden', !isSPOS);
+
+      setSection('section-tef',      isTEF);
+      setSection('section-smartpos', isSPOS);
+
+      resetPortal();
+      resetApp();
+      show($('submit-area'));
+
+      setTimeout(() => {
+        (isTEF ? $('section-tef') : $('section-smartpos'))
+          .scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    });
+  });
+
+  /* Responsável pelo Portal (TEF) */
+  function resetPortal() {
+    document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => r.checked = false);
+    hide($('warning-mesmo'));
+    hide($('campos-portal'));
+    $('confirmar-mesmo').checked = false;
+    $('campos-portal').querySelectorAll('input').forEach(f => f.disabled = true);
+  }
+
+  document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => {
+    r.addEventListener('change', function () {
+      const isSim = this.value === 'SIM';
+      $('warning-mesmo').classList.toggle('hidden', !isSim);
+      $('campos-portal').classList.toggle('hidden',  isSim);
+      $('campos-portal').querySelectorAll('input').forEach(f => f.disabled = isSim);
+      if (isSim) {
+        setTimeout(() =>
+          $('warning-mesmo').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+      }
+    });
+  });
+
+  /* App SMARTPOS */
+  function resetApp() {
+    document.querySelectorAll('input[name="app-instalado"]').forEach(r => r.checked = false);
+    hide($('warning-app'));
+  }
+
+  document.querySelectorAll('input[name="app-instalado"]').forEach(r => {
+    r.addEventListener('change', function () {
+      const isNao = this.value === 'NÃO';
+      $('warning-app').classList.toggle('hidden', !isNao);
+      if (isNao) {
+        setTimeout(() =>
+          $('warning-app').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+      }
+    });
+  });
+
+  /* Validação no envio */
+  $('mainForm').addEventListener('submit', function (e) {
+    const produto = document.querySelector('input[name="produto"]:checked');
+    if (!produto) {
+      e.preventDefault();
+      alert('Selecione o tipo de equipamento antes de enviar.');
+      return;
+    }
+
+    if (produto.value === 'TEF') {
+      const mesmoResp = document.querySelector('input[name="mesmo-responsavel"]:checked');
+      if (!mesmoResp) {
+        e.preventDefault();
+        document.querySelector('input[name="mesmo-responsavel"]')
+          .closest('.section').scrollIntoView({ behavior: 'smooth' });
+        alert('Informe se o responsável pelo site do TEF é o mesmo da loja.');
+        return;
+      }
+      if (mesmoResp.value === 'SIM' && !$('confirmar-mesmo').checked) {
+        e.preventDefault();
+        $('warning-mesmo').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        alert('Para continuar, marque a confirmação de ciência no aviso amarelo.');
+        return;
+      }
+    }
+
+    if (produto.value === 'SMARTPOS') {
+      if (!document.querySelector('input[name="app-instalado"]:checked')) {
+        e.preventDefault();
+        alert('Informe se o aplicativo AppSuperTEF está instalado na maquininha.');
+        return;
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
