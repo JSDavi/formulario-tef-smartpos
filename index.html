@@ -3,75 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formul·rio de AquisiÁ„o ó TEF / SMARTPOS</title>
+  <title>Formul√°rio de Aquisi√ß√£o ‚Äî TEF / SMARTPOS</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f0f4f8;
-      color: #1a202c;
-      min-height: 100vh;
-      padding: 28px 16px 48px;
-    }
-
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; padding: 28px 16px 48px; }
     .container { max-width: 720px; margin: 0 auto; }
-
-    /* Header */
-    .header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-      color: #fff;
-      padding: 36px 40px 32px;
-      border-radius: 16px 16px 0 0;
-      text-align: center;
-    }
+    .header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #fff; padding: 36px 40px 32px; border-radius: 16px 16px 0 0; text-align: center; }
     .header h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; }
     .header p  { font-size: 0.93rem; opacity: 0.85; line-height: 1.5; }
-
-    /* Card */
-    .form-card {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      padding: 40px;
-      box-shadow: 0 6px 32px rgba(0,0,0,0.08);
-    }
-
-    /* Success Message */
-    .success-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 60px 40px;
-      text-align: center;
-      box-shadow: 0 6px 32px rgba(0,0,0,0.08);
-    }
+    .form-card { background: #fff; border-radius: 0 0 16px 16px; padding: 40px; box-shadow: 0 6px 32px rgba(0,0,0,0.08); }
+    .success-card { background: #fff; border-radius: 16px; padding: 60px 40px; text-align: center; box-shadow: 0 6px 32px rgba(0,0,0,0.08); }
     .success-icon { font-size: 4rem; margin-bottom: 20px; }
     .success-title { font-size: 1.5rem; font-weight: 800; color: #15803d; margin-bottom: 12px; }
     .success-text { font-size: 1rem; color: #4b5563; line-height: 1.6; }
-
-    /* Review Screen */
     #reviewContainer { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
     #reviewContainer h3 { color: #1e3a8a; margin-bottom: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
     .review-item { margin-bottom: 10px; font-size: 0.9rem; }
     .review-item strong { color: #4b5563; display: inline-block; width: 140px; }
     .review-item span { color: #1a202c; font-weight: 600; }
     .review-divider { margin: 16px 0; border-top: 1px dashed #cbd5e1; }
-
-    /* Section */
     .section { margin-bottom: 36px; }
-
-    .section-title {
-      display: flex; align-items: center; gap: 10px; font-size: 1.05rem;
-      font-weight: 700; color: #1e3a8a; padding-bottom: 14px;
-      border-bottom: 2px solid #e8edf5; margin-bottom: 22px;
-    }
-    .step-badge {
-      width: 28px; height: 28px; background: #1e3a8a; color: #fff;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 0.78rem; font-weight: 800; flex-shrink: 0;
-    }
-
-    /* Fields */
-    .field-group      { display: grid; gap: 16px; }
+    .section-title { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 700; color: #1e3a8a; padding-bottom: 14px; border-bottom: 2px solid #e8edf5; margin-bottom: 22px; }
+    .step-badge { width: 28px; height: 28px; background: #1e3a8a; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; flex-shrink: 0; }
+    .field-group { display: grid; gap: 16px; }
     .field-group.cols { grid-template-columns: 1fr 1fr; }
     .field { display: flex; flex-direction: column; gap: 6px; position: relative; }
     .field label { font-size: 0.78rem; font-weight: 700; color: #4b5563; text-transform: uppercase; }
@@ -80,44 +34,27 @@
     .field input:focus, .field select:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
     .field input:disabled, .field select:disabled { opacity: 0.7; background: #e5e7eb; cursor: not-allowed; }
     .loading-indicator { position: absolute; right: 12px; top: 36px; font-size: 0.8rem; color: #2563eb; font-weight: bold; }
-
-    /* Product Picker with Images */
     .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
     .product-option { position: relative; }
     .product-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-    .product-option label {
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      gap: 12px; padding: 24px 16px; border: 2px solid #e5e7eb; border-radius: 14px;
-      cursor: pointer; text-align: center; background: #f9fafb; transition: all 0.2s; height: 100%;
-    }
+    .product-option label { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; padding: 24px 16px; border: 2px solid #e5e7eb; border-radius: 14px; cursor: pointer; text-align: center; background: #f9fafb; transition: all 0.2s; height: 100%; }
     .product-option label:hover { border-color: #93c5fd; background: #eff6ff; }
     .product-option input:checked + label { border-color: #2563eb; background: #eff6ff; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
-    
     .product-img-box { position: relative; width: 120px; height: 120px; border-radius: 8px; overflow: hidden; background: #fff; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; }
     .product-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-    
-    /* CSS Obfuscation for Logos */
     .blur-tef { position: absolute; top: 22%; left: 35%; width: 30%; height: 6%; background: #1a1a1a; filter: blur(2px); border-radius: 2px; }
     .blur-spos { position: absolute; bottom: 4%; left: 35%; width: 30%; height: 5%; background: #111; filter: blur(2px); border-radius: 2px; }
-
     .product-name { font-size: 1.15rem; font-weight: 800; color: #1e3a8a; margin-top: auto; }
     .product-desc { font-size: 0.78rem; color: #6b7280; line-height: 1.4; }
-
-    /* UI Boxes */
     .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #1e40af; line-height: 1.6; }
     .subsection { background: #f8fafc; border: 1px solid #e8edf5; border-radius: 12px; padding: 24px; margin-top: 16px; }
-    
     .radio-group { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
     .radio-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
     .radio-opt label { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: #f9fafb; }
     .radio-opt input:checked + label { border-color: #2563eb; background: #eff6ff; color: #1e3a8a; }
-
     .warning-box { background: #fffbeb; border: 1.5px solid #fcd34d; border-left: 5px solid #f59e0b; border-radius: 12px; padding: 22px 24px; margin-top: 16px; }
     .app-warning { background: #fff7ed; border: 1.5px solid #fdba74; border-left: 5px solid #f97316; border-radius: 12px; padding: 20px 24px; margin-top: 16px; }
-
     hr { border: none; border-top: 1px solid #e5e7eb; margin: 30px 0; }
-
-    /* Submit & Action Buttons */
     .btn-group { display: flex; gap: 12px; margin-top: 24px; }
     .btn { flex: 1; padding: 16px; color: #fff; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
     .btn-primary { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
@@ -125,24 +62,17 @@
     .btn-secondary { background: #64748b; }
     .btn-secondary:hover:not(:disabled) { background: #475569; }
     .btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
-
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-
 <div class="container">
-
   <div class="header" id="mainHeader">
-    <h1>?? Formul·rio de AquisiÁ„o</h1>
-    <p>Preencha os dados abaixo para solicitar a instalaÁ„o do seu equipamento de pagamento</p>
+    <h1>üìã Formul√°rio de Aquisi√ß√£o</h1>
+    <p>Preencha os dados abaixo para solicitar a instala√ß√£o do seu equipamento de pagamento</p>
   </div>
-
   <div class="form-card" id="formContainer">
-    <!-- FORMUL¡RIO DE ENTRADA -->
     <form id="mainForm">
-      
-      <!-- SE«√O 1 ó Tipo de Equipamento -->
       <div class="section">
         <div class="section-title"><div class="step-badge">1</div>Tipo de Equipamento</div>
         <div class="product-grid">
@@ -151,7 +81,7 @@
             <label for="opt-tef">
               <div class="product-img-box">
                 <img src="TEF.jpg" alt="Equipamento TEF" />
-                <div class="blur-tef"></div> <!-- Cobre a logo da Gertec -->
+                <div class="blur-tef"></div>
               </div>
               <span class="product-name">TEF</span>
               <span class="product-desc">Terminal integrado ao computador / caixa</span>
@@ -162,7 +92,7 @@
             <label for="opt-smartpos">
               <div class="product-img-box">
                 <img src="SMARTPOS.jpg" alt="Equipamento SMARTPOS" />
-                <div class="blur-spos"></div> <!-- Cobre a logo da Stone -->
+                <div class="blur-spos"></div>
               </div>
               <span class="product-name">SMARTPOS</span>
               <span class="product-desc">Maquininha inteligente com Android</span>
@@ -170,12 +100,8 @@
           </div>
         </div>
       </div>
-
       <hr />
-
-      <!-- BLOCO TEF -->
       <div id="section-tef" class="hidden">
-        <!-- Equipamento e Adquirente -->
         <div class="section">
           <div class="section-title"><div class="step-badge">2</div>Equipamento e Adquirente</div>
           <div class="field-group cols">
@@ -183,12 +109,10 @@
             <div class="field"><label>Adquirente <span class="req">*</span></label><input type="text" name="tef-adquirente" id="tef-adq" class="req-field" placeholder="Ex: REDE, CIELO..." disabled /></div>
           </div>
           <div class="field-group cols" style="margin-top:16px;">
-            <div class="field"><label>N˙mero de AfiliaÁ„o <span class="req">*</span></label><input type="text" name="tef-afiliacao" id="tef-afil" class="req-field" disabled /></div>
-            <div class="field"><label>N˙mero LÛgico <span class="req">*</span></label><input type="text" name="tef-logico" id="tef-log" class="req-field" disabled /></div>
+            <div class="field"><label>N√∫mero de Afilia√ß√£o <span class="req">*</span></label><input type="text" name="tef-afiliacao" id="tef-afil" class="req-field" disabled /></div>
+            <div class="field"><label>N√∫mero L√≥gico <span class="req">*</span></label><input type="text" name="tef-logico" id="tef-log" class="req-field" disabled /></div>
           </div>
         </div>
-
-        <!-- Dados da Loja -->
         <div class="section">
           <div class="section-title"><div class="step-badge">3</div>Dados da Loja</div>
           <div class="field-group">
@@ -200,19 +124,17 @@
                 </select>
               </div>
             </div>
-            <div class="field"><label>Raz„o Social <span class="req">*</span></label><input type="text" name="tef-razao" id="tef-razao" class="req-field" disabled /></div>
+            <div class="field"><label>Raz√£o Social <span class="req">*</span></label><input type="text" name="tef-razao" id="tef-razao" class="req-field" disabled /></div>
             <div class="field"><label>Nome Fantasia</label><input type="text" name="tef-fantasia" id="tef-fantasia" disabled /></div>
-            <div class="field"><label>EndereÁo <span class="req">*</span></label><input type="text" name="tef-endereco" id="tef-end" class="req-field" disabled /></div>
+            <div class="field"><label>Endere√ßo <span class="req">*</span></label><input type="text" name="tef-endereco" id="tef-end" class="req-field" disabled /></div>
             <div class="field-group cols">
               <div class="field"><label>Bairro <span class="req">*</span></label><input type="text" name="tef-bairro" id="tef-bairro" class="req-field" disabled /></div>
               <div class="field"><label>Cidade <span class="req">*</span></label><input type="text" name="tef-cidade" id="tef-cidade" class="req-field" disabled /></div>
             </div>
           </div>
         </div>
-
-        <!-- Respons·vel Loja -->
         <div class="section">
-          <div class="section-title"><div class="step-badge">4</div>Respons·vel pela Loja</div>
+          <div class="section-title"><div class="step-badge">4</div>Respons√°vel pela Loja</div>
           <div class="subsection">
             <div class="field-group">
               <div class="field"><label>Nome Completo <span class="req">*</span></label><input type="text" name="loja-nome" id="loja-nome" class="req-field" disabled /></div>
@@ -223,21 +145,19 @@
             </div>
           </div>
         </div>
-
-        <!-- Respons·vel Portal TEF -->
         <div class="section">
-          <div class="section-title"><div class="step-badge">5</div>Respons·vel pelo Site do TEF</div>
-          <p style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">O respons·vel pelo site do TEF È o mesmo respons·vel pela loja?</p>
+          <div class="section-title"><div class="step-badge">5</div>Respons√°vel pelo Site do TEF</div>
+          <p style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">O respons√°vel pelo site do TEF √© o mesmo respons√°vel pela loja?</p>
           <div class="radio-group">
-            <div class="radio-opt"><input type="radio" id="mesmo-sim" name="mesmo-responsavel" value="SIM" disabled /><label for="mesmo-sim">? Sim, È a mesma pessoa</label></div>
-            <div class="radio-opt"><input type="radio" id="mesmo-nao" name="mesmo-responsavel" value="N√O" disabled /><label for="mesmo-nao">?? N„o, s„o pessoas diferentes</label></div>
+            <div class="radio-opt"><input type="radio" id="mesmo-sim" name="mesmo-responsavel" value="SIM" disabled /><label for="mesmo-sim">‚úÖ Sim, √© a mesma pessoa</label></div>
+            <div class="radio-opt"><input type="radio" id="mesmo-nao" name="mesmo-responsavel" value="N√ÉO" disabled /><label for="mesmo-nao">üë• N√£o, s√£o pessoas diferentes</label></div>
           </div>
           <div class="warning-box hidden" id="warning-mesmo">
-            <div class="warning-title">?? AtenÁ„o ó Verifique antes de continuar</div>
-            <p style="font-size:0.85rem;margin-bottom:10px;">Se essa pessoa ficar indisponÌvel, ninguÈm ter· acesso ao portal para resolver problemas.</p>
+            <div class="warning-title">‚ö†Ô∏è Aten√ß√£o ‚Äî Verifique antes de continuar</div>
+            <p style="font-size:0.85rem;margin-bottom:10px;">Se essa pessoa ficar indispon√≠vel, ningu√©m ter√° acesso ao portal para resolver problemas.</p>
             <div class="warning-confirm">
               <input type="checkbox" id="confirmar-mesmo" disabled />
-              <label for="confirmar-mesmo">Estou ciente e desejo continuar usando o mesmo respons·vel.</label>
+              <label for="confirmar-mesmo">Estou ciente e desejo continuar usando o mesmo respons√°vel.</label>
             </div>
           </div>
           <div class="subsection hidden" id="campos-portal">
@@ -250,86 +170,72 @@
             </div>
           </div>
         </div>
-      </div><!-- /section-tef -->
-
-      <!-- BLOCO SMARTPOS -->
+      </div>
       <div id="section-smartpos" class="hidden">
         <div class="section">
           <div class="section-title"><div class="step-badge">2</div>Dados da Empresa</div>
           <div class="field-group">
             <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="spos-cnpj" id="spos-cnpj" class="req-field" maxlength="18" disabled /><span id="spos-loading" class="loading-indicator hidden">Buscando...</span></div>
-            <div class="field"><label>Raz„o Social <span class="req">*</span></label><input type="text" name="spos-razao" id="spos-razao" class="req-field" disabled /></div>
+            <div class="field"><label>Raz√£o Social <span class="req">*</span></label><input type="text" name="spos-razao" id="spos-razao" class="req-field" disabled /></div>
             <div class="field"><label>Nome Fantasia</label><input type="text" name="spos-fantasia" id="spos-fantasia" disabled /></div>
           </div>
         </div>
         <div class="section">
           <div class="section-title"><div class="step-badge">3</div>Dados da Maquininha</div>
           <div class="field-group">
-            <div class="field"><label>N˙mero de SÈrie <span class="req">*</span></label><input type="text" name="spos-serie" id="spos-serie" class="req-field" disabled /></div>
+            <div class="field"><label>N√∫mero de S√©rie <span class="req">*</span></label><input type="text" name="spos-serie" id="spos-serie" class="req-field" disabled /></div>
             <div class="field"><label>Modelo <span class="req">*</span></label><input type="text" name="spos-modelo" id="spos-modelo" class="req-field" disabled /></div>
           </div>
         </div>
         <div class="section">
           <div class="section-title"><div class="step-badge">4</div>Aplicativo AppSuperTEF</div>
-          <p style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">O aplicativo j· est· instalado na maquininha?</p>
+          <p style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">O aplicativo j√° est√° instalado na maquininha?</p>
           <div class="radio-group">
-            <div class="radio-opt"><input type="radio" id="app-sim" name="app-instalado" value="SIM" disabled /><label for="app-sim">? Sim</label></div>
-            <div class="radio-opt"><input type="radio" id="app-nao" name="app-instalado" value="N√O" disabled /><label for="app-nao">? N„o</label></div>
+            <div class="radio-opt"><input type="radio" id="app-sim" name="app-instalado" value="SIM" disabled /><label for="app-sim">‚úÖ Sim</label></div>
+            <div class="radio-opt"><input type="radio" id="app-nao" name="app-instalado" value="N√ÉO" disabled /><label for="app-nao">‚ùå N√£o</label></div>
           </div>
           <div class="app-warning hidden" id="warning-app">
-            <div class="app-warning-title">?? Como instalar o AppSuperTEF</div>
-            <div class="app-warning-body">FaÁa o download na loja de aplicativos da maquininha antes de prosseguir.</div>
+            <div class="app-warning-title">üì• Como instalar o AppSuperTEF</div>
+            <div class="app-warning-body">Fa√ßa o download na loja de aplicativos da maquininha antes de prosseguir.</div>
           </div>
         </div>
-      </div><!-- /section-smartpos -->
-
+      </div>
       <div id="submit-area" class="hidden">
         <hr />
-        <button type="button" class="btn btn-primary" id="btn-revisar">?? Revisar Dados</button>
+        <button type="button" class="btn btn-primary" id="btn-revisar">üîé Revisar Dados</button>
       </div>
     </form>
-
-    <!-- TELA DE REVIS√O -->
     <div id="reviewArea" class="hidden">
-      <h2 style="color:#1e3a8a;margin-bottom:10px;">Revis„o da SolicitaÁ„o</h2>
-      <p style="font-size:0.9rem;color:#4b5563;margin-bottom:24px;">Confira se todos os dados abaixo est„o corretos antes de enviar.</p>
-      
+      <h2 style="color:#1e3a8a;margin-bottom:10px;">Revis√£o da Solicita√ß√£o</h2>
+      <p style="font-size:0.9rem;color:#4b5563;margin-bottom:24px;">Confira se todos os dados abaixo est√£o corretos antes de enviar.</p>
       <div id="reviewContainer"></div>
-
       <div class="btn-group">
-        <button type="button" class="btn btn-secondary" id="btn-voltar">?? Voltar e Editar</button>
-        <button type="button" class="btn btn-primary" id="btn-confirmar">? Confirmar e Enviar</button>
+        <button type="button" class="btn btn-secondary" id="btn-voltar">‚úèÔ∏è Voltar e Editar</button>
+        <button type="button" class="btn btn-primary" id="btn-confirmar">‚úÖ Confirmar e Enviar</button>
       </div>
     </div>
-
   </div>
-
   <div class="success-card hidden" id="successCard">
-    <div class="success-icon">?</div>
-    <div class="success-title">SolicitaÁ„o Enviada!</div>
+    <div class="success-icon">‚úÖ</div>
+    <div class="success-title">Solicita√ß√£o Enviada!</div>
     <div class="success-text">
-      O n˙mero do seu protocolo È: <strong id="protocolo-view" style="color:#1e3a8a;"></strong><br/><br/>
-      Nossa equipe far· a conferÍncia e entrar· em contato em breve para finalizar a instalaÁ„o.
+      O n√∫mero do seu protocolo √©: <strong id="protocolo-view" style="color:#1e3a8a;"></strong><br/><br/>
+      Nossa equipe far√° a confer√™ncia e entrar√° em contato em breve para finalizar a instala√ß√£o.
     </div>
   </div>
 </div>
-
 <script>
   const $ = id => document.getElementById(id);
   function show(el) { el.classList.remove('hidden'); }
   function hide(el) { el.classList.add('hidden'); }
-
   let currentProtocol = '';
   let emailData = {};
-
   function setSection(id, enabled) {
     $(id).querySelectorAll('input, select').forEach(f => {
       f.disabled = !enabled;
       if (f.classList.contains('req-field')) f.required = enabled;
     });
   }
-
-  // Mascaras e API CNPJ
   function maskCNPJ(v) {
     v = v.replace(/\D/g, '').slice(0, 14);
     if (v.length > 12) return v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})$/, '$1.$2.$3/$4-$5');
@@ -345,7 +251,6 @@
     if (v.length > 2)  return v.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
     return v;
   }
-
   async function buscarCNPJ(cnpj, prefixo) {
     const limpo = cnpj.replace(/\D/g, '');
     if (limpo.length !== 14) return;
@@ -366,7 +271,6 @@
       }
     } catch (e) {} finally { if (ind) hide(ind); }
   }
-
   ['tef-cnpj','spos-cnpj'].forEach(id => {
     if ($(id)) {
       $(id).addEventListener('input', e => {
@@ -375,12 +279,9 @@
       });
     }
   });
-
   ['loja-tel','portal-tel'].forEach(id => {
     if ($(id)) $(id).addEventListener('input', e => e.target.value = maskPhone(e.target.value));
   });
-
-  // Toggle sections
   document.querySelectorAll('input[name="produto"]').forEach(r => {
     r.addEventListener('change', function () {
       const isTEF = this.value === 'TEF';
@@ -391,7 +292,6 @@
       resetPortal(); resetApp(); show($('submit-area'));
     });
   });
-
   function resetPortal() {
     document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => { r.checked = false; r.required = true; });
     hide($('warning-mesmo')); hide($('campos-portal'));
@@ -407,128 +307,89 @@
       $('campos-portal').querySelectorAll('input').forEach(f => { f.disabled = isSim; if (f.classList.contains('req-field')) f.required = !isSim; });
     });
   });
-
   function resetApp() {
     document.querySelectorAll('input[name="app-instalado"]').forEach(r => { r.checked = false; r.required = true; });
     hide($('warning-app'));
   }
   document.querySelectorAll('input[name="app-instalado"]').forEach(r => {
     r.addEventListener('change', function () {
-      $('warning-app').classList.toggle('hidden', this.value !== 'N√O');
+      $('warning-app').classList.toggle('hidden', this.value !== 'N√ÉO');
     });
   });
-
   function getVal(id) { return $(id) ? $(id).value : ''; }
-
-  // REVISAR
   $('btn-revisar').addEventListener('click', () => {
     if (!$('mainForm').reportValidity()) return;
-    
     const prod = document.querySelector('input[name="produto"]:checked').value;
     let html = '';
-    
-    // Gerar Protocolo
     const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,'');
     const randomHex = Math.random().toString(16).slice(2, 6).toUpperCase();
     currentProtocol = `${prod}-${dateStr}-${randomHex}`;
-
-    html += `<h3>?? Protocolo: ${currentProtocol}</h3>`;
+    html += `<h3>üìã Protocolo: ${currentProtocol}</h3>`;
     html += `<div class="review-item"><strong>Equipamento:</strong> <span>${prod}</span></div>`;
-    
     emailData = { prod, protocol: currentProtocol };
-
     if (prod === 'TEF') {
       html += `<div class="review-item"><strong>Quantidade:</strong> <span>${getVal('tef-qtd')}</span></div>`;
       html += `<div class="review-item"><strong>Adquirente:</strong> <span>${getVal('tef-adq')}</span></div>`;
-      html += `<div class="review-item"><strong>AfiliaÁ„o:</strong> <span>${getVal('tef-afil')}</span></div>`;
-      html += `<div class="review-item"><strong>LÛgico:</strong> <span>${getVal('tef-log')}</span></div>`;
+      html += `<div class="review-item"><strong>Afilia√ß√£o:</strong> <span>${getVal('tef-afil')}</span></div>`;
+      html += `<div class="review-item"><strong>L√≥gico:</strong> <span>${getVal('tef-log')}</span></div>`;
       html += `<div class="review-divider"></div>`;
       html += `<div class="review-item"><strong>CNPJ:</strong> <span>${getVal('tef-cnpj')}</span></div>`;
-      html += `<div class="review-item"><strong>Raz„o Social:</strong> <span>${getVal('tef-razao')}</span></div>`;
+      html += `<div class="review-item"><strong>Raz√£o Social:</strong> <span>${getVal('tef-razao')}</span></div>`;
       html += `<div class="review-item"><strong>Fantasia:</strong> <span>${getVal('tef-fantasia')}</span></div>`;
-      html += `<div class="review-item"><strong>EndereÁo:</strong> <span>${getVal('tef-end')} - ${getVal('tef-bairro')}, ${getVal('tef-cidade')}/${getVal('tef-uf')}</span></div>`;
+      html += `<div class="review-item"><strong>Endere√ßo:</strong> <span>${getVal('tef-end')} - ${getVal('tef-bairro')}, ${getVal('tef-cidade')}/${getVal('tef-uf')}</span></div>`;
       html += `<div class="review-divider"></div>`;
       html += `<div class="review-item"><strong>Resp. Loja:</strong> <span>${getVal('loja-nome')} (${getVal('loja-tel')})</span></div>`;
-      
       const mesmo = document.querySelector('input[name="mesmo-responsavel"]:checked').value;
       if (mesmo === 'SIM') {
         html += `<div class="review-item"><strong>Resp. Portal:</strong> <span>O mesmo da loja</span></div>`;
       } else {
         html += `<div class="review-item"><strong>Resp. Portal:</strong> <span>${getVal('portal-nome')} (${getVal('portal-tel')})</span></div>`;
       }
-
-      // Salva em emailData
-      emailData.cnpj = getVal('tef-cnpj'); emailData.razao = getVal('tef-razao'); emailData.fantasia = getVal('tef-fantasia');
+      emailData.fantasia = getVal('tef-fantasia'); emailData.razao = getVal('tef-razao');
       emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: TEF\nQTD: ${getVal('tef-qtd')}\nADQUIRENTE: ${getVal('tef-adq')}\nAFILIACAO: ${getVal('tef-afil')}\nLOGICO: ${getVal('tef-log')}\nCNPJ: ${getVal('tef-cnpj')}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${getVal('loja-email')} | ${getVal('loja-tel')}`;
-      if(mesmo==='SIM') {
-        emailData.txt += `\nRESP. PORTAL: MESMO DA LOJA`;
-      } else {
-        emailData.txt += `\nRESP. PORTAL: ${getVal('portal-nome')} | ${getVal('portal-email')} | ${getVal('portal-tel')}`;
-      }
-
+      if(mesmo==='SIM') emailData.txt += `\nRESP. PORTAL: MESMO DA LOJA`;
+      else emailData.txt += `\nRESP. PORTAL: ${getVal('portal-nome')} | ${getVal('portal-email')} | ${getVal('portal-tel')}`;
     } else {
       html += `<div class="review-item"><strong>CNPJ:</strong> <span>${getVal('spos-cnpj')}</span></div>`;
-      html += `<div class="review-item"><strong>Raz„o Social:</strong> <span>${getVal('spos-razao')}</span></div>`;
+      html += `<div class="review-item"><strong>Raz√£o Social:</strong> <span>${getVal('spos-razao')}</span></div>`;
       html += `<div class="review-item"><strong>Fantasia:</strong> <span>${getVal('spos-fantasia')}</span></div>`;
       html += `<div class="review-divider"></div>`;
-      html += `<div class="review-item"><strong>Num. SÈrie:</strong> <span>${getVal('spos-serie')}</span></div>`;
+      html += `<div class="review-item"><strong>Num. S√©rie:</strong> <span>${getVal('spos-serie')}</span></div>`;
       html += `<div class="review-item"><strong>Modelo:</strong> <span>${getVal('spos-modelo')}</span></div>`;
-      
       const app = document.querySelector('input[name="app-instalado"]:checked').value;
       html += `<div class="review-item"><strong>App Instalado:</strong> <span>${app}</span></div>`;
-      
-      emailData.cnpj = getVal('spos-cnpj'); emailData.razao = getVal('spos-razao'); emailData.fantasia = getVal('spos-fantasia');
+      emailData.fantasia = getVal('spos-fantasia'); emailData.razao = getVal('spos-razao');
       emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: SMARTPOS\nCNPJ: ${getVal('spos-cnpj')}\nRAZAO: ${getVal('spos-razao')}\nFANTASIA: ${getVal('spos-fantasia')}\nSERIE: ${getVal('spos-serie')}\nMODELO: ${getVal('spos-modelo')}\nAPP_INSTALADO: ${app}`;
     }
-
     $('reviewContainer').innerHTML = html;
-    hide($('mainForm'));
-    show($('reviewArea'));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    hide($('mainForm')); show($('reviewArea')); window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-
-  $('btn-voltar').addEventListener('click', () => {
-    hide($('reviewArea')); show($('mainForm'));
-  });
-
+  $('btn-voltar').addEventListener('click', () => { hide($('reviewArea')); show($('mainForm')); });
   $('btn-confirmar').addEventListener('click', function() {
-    const btn = this;
-    const btnV = $('btn-voltar');
-    btn.innerHTML = '? Enviando...'; btn.disabled = true; btnV.disabled = true;
-
+    const btn = this; const btnV = $('btn-voltar');
+    btn.innerHTML = '‚è≥ Enviando...'; btn.disabled = true; btnV.disabled = true;
     const nome_empresa = emailData.fantasia || emailData.razao;
-    const _subject = `Nova SolicitaÁ„o ${nome_empresa} (Equipamento ${emailData.prod}) #${currentProtocol}`;
-
-    // Vamos criar o objeto para envio via FormSubmit (ou Make futuramente)
+    const _subject = `Nova Solicita√ß√£o ${nome_empresa} (Equipamento ${emailData.prod}) #${currentProtocol}`;
     const formData = new FormData();
     formData.append('_subject', _subject);
     formData.append('_template', 'box');
     formData.append('PROTOCOLO', currentProtocol);
     formData.append('DADOS_COMPLETOS', emailData.txt);
-    
-    // Gerar TXT nativo e anexar (O FormSubmit aceita anexo via input file, ent„o vamos criar um File via JS)
     const blob = new Blob([emailData.txt], { type: 'text/plain' });
     const file = new File([blob], `dados-${currentProtocol}.txt`);
     formData.append('attachment', file);
-
-    // Envio AJAX para o FormSubmit no seu email
-    fetch('https://formsubmit.co/ajax/davisilvace@gmail.com', {
-      method: 'POST',
-      body: formData
-    })
+    fetch('https://formsubmit.co/ajax/davisilvace@gmail.com', { method: 'POST', body: formData })
     .then(r => r.json())
     .then(data => {
       $('protocolo-view').innerText = currentProtocol;
-      hide($('reviewArea')); hide($('mainHeader'));
-      show($('successCard'));
+      hide($('reviewArea')); hide($('mainHeader')); show($('successCard'));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     })
     .catch(e => {
-      alert("Erro ao enviar! O Netlify/FormSubmit pode estar bloqueando sem ativaÁ„o. Tente novamente.");
-      btn.innerHTML = '? Confirmar e Enviar'; btn.disabled = false; btnV.disabled = false;
+      alert("Erro ao enviar! O Netlify/FormSubmit pode estar bloqueando sem ativa√ß√£o. Tente novamente.");
+      btn.innerHTML = '‚úÖ Confirmar e Enviar'; btn.disabled = false; btnV.disabled = false;
     });
   });
 </script>
-
 </body>
 </html>
