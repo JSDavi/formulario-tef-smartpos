@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário de Aquisição — TEF / SMARTPOS</title>
+  <title>Formul�rio de Aquisi��o � TEF / SMARTPOS</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -36,298 +36,134 @@
       box-shadow: 0 6px 32px rgba(0,0,0,0.08);
     }
 
+    /* Success Message */
+    .success-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.08);
+    }
+    .success-icon { font-size: 4rem; margin-bottom: 20px; }
+    .success-title { font-size: 1.5rem; font-weight: 800; color: #15803d; margin-bottom: 12px; }
+    .success-text { font-size: 1rem; color: #4b5563; line-height: 1.6; }
+
+    /* Review Screen */
+    #reviewContainer { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    #reviewContainer h3 { color: #1e3a8a; margin-bottom: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .review-item { margin-bottom: 10px; font-size: 0.9rem; }
+    .review-item strong { color: #4b5563; display: inline-block; width: 140px; }
+    .review-item span { color: #1a202c; font-weight: 600; }
+    .review-divider { margin: 16px 0; border-top: 1px dashed #cbd5e1; }
+
     /* Section */
     .section { margin-bottom: 36px; }
 
     .section-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #1e3a8a;
-      padding-bottom: 14px;
-      border-bottom: 2px solid #e8edf5;
-      margin-bottom: 22px;
+      display: flex; align-items: center; gap: 10px; font-size: 1.05rem;
+      font-weight: 700; color: #1e3a8a; padding-bottom: 14px;
+      border-bottom: 2px solid #e8edf5; margin-bottom: 22px;
     }
     .step-badge {
-      width: 28px; height: 28px;
-      background: #1e3a8a;
-      color: #fff;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.78rem; font-weight: 800;
-      flex-shrink: 0;
+      width: 28px; height: 28px; background: #1e3a8a; color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800; flex-shrink: 0;
     }
 
     /* Fields */
     .field-group      { display: grid; gap: 16px; }
     .field-group.cols { grid-template-columns: 1fr 1fr; }
-
-    .field { display: flex; flex-direction: column; gap: 6px; }
-
-    .field label {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #4b5563;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .field { display: flex; flex-direction: column; gap: 6px; position: relative; }
+    .field label { font-size: 0.78rem; font-weight: 700; color: #4b5563; text-transform: uppercase; }
     .field label .req { color: #dc2626; margin-left: 2px; }
+    .field input, .field select { padding: 11px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; background: #f9fafb; transition: all 0.2s; }
+    .field input:focus, .field select:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+    .field input:disabled, .field select:disabled { opacity: 0.7; background: #e5e7eb; cursor: not-allowed; }
+    .loading-indicator { position: absolute; right: 12px; top: 36px; font-size: 0.8rem; color: #2563eb; font-weight: bold; }
 
-    .field input,
-    .field select {
-      padding: 11px 14px;
-      border: 1.5px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      color: #1a202c;
-      background: #f9fafb;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .field input:focus,
-    .field select:focus {
-      outline: none;
-      border-color: #2563eb;
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-    }
-    .field input::placeholder { color: #9ca3af; }
-
-    /* Product Picker */
-    .product-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 10px;
-    }
+    /* Product Picker with Images */
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
     .product-option { position: relative; }
-    .product-option input[type="radio"] {
-      position: absolute; opacity: 0; width: 0; height: 0;
-    }
+    .product-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
     .product-option label {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 6px;
-      padding: 28px 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 14px;
-      cursor: pointer;
-      text-align: center;
-      background: #f9fafb;
-      transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      gap: 12px; padding: 24px 16px; border: 2px solid #e5e7eb; border-radius: 14px;
+      cursor: pointer; text-align: center; background: #f9fafb; transition: all 0.2s; height: 100%;
     }
     .product-option label:hover { border-color: #93c5fd; background: #eff6ff; }
-    .product-option input:checked + label {
-      border-color: #2563eb;
-      background: #eff6ff;
-      box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
-    }
-    .product-icon { font-size: 2.2rem; }
-    .product-name { font-size: 1.15rem; font-weight: 800; color: #1e3a8a; }
-    .product-desc { font-size: 0.78rem; color: #6b7280; }
+    .product-option input:checked + label { border-color: #2563eb; background: #eff6ff; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+    
+    .product-img-box { position: relative; width: 120px; height: 120px; border-radius: 8px; overflow: hidden; background: #fff; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; }
+    .product-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    
+    /* CSS Obfuscation for Logos */
+    .blur-tef { position: absolute; top: 22%; left: 35%; width: 30%; height: 6%; background: #1a1a1a; filter: blur(2px); border-radius: 2px; }
+    .blur-spos { position: absolute; bottom: 4%; left: 35%; width: 30%; height: 5%; background: #111; filter: blur(2px); border-radius: 2px; }
 
-    /* Info Box (blue) */
-    .info-box {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-left: 5px solid #2563eb;
-      border-radius: 10px;
-      padding: 18px 20px;
-      margin-bottom: 22px;
-      font-size: 0.88rem;
-      color: #1e40af;
-      line-height: 1.6;
-    }
-    .info-box strong { display: block; margin-bottom: 8px; font-size: 0.92rem; }
-    .info-box ul { list-style: none; padding: 0; }
-    .info-box ul li { padding: 3px 0; }
-    .info-box ul li::before { content: '→ '; font-weight: 700; }
+    .product-name { font-size: 1.15rem; font-weight: 800; color: #1e3a8a; margin-top: auto; }
+    .product-desc { font-size: 0.78rem; color: #6b7280; line-height: 1.4; }
 
-    /* Subsection */
-    .subsection {
-      background: #f8fafc;
-      border: 1px solid #e8edf5;
-      border-radius: 12px;
-      padding: 24px;
-      margin-top: 16px;
-    }
-    .subsection-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #374151;
-      margin-bottom: 18px;
-    }
-
-    /* Radio Buttons */
+    /* UI Boxes */
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #1e40af; line-height: 1.6; }
+    .subsection { background: #f8fafc; border: 1px solid #e8edf5; border-radius: 12px; padding: 24px; margin-top: 16px; }
+    
     .radio-group { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
-    .radio-opt { position: relative; }
-    .radio-opt input[type="radio"] {
-      position: absolute; opacity: 0; width: 0; height: 0;
-    }
-    .radio-opt label {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 22px;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #374151;
-      transition: all 0.2s;
-      background: #f9fafb;
-    }
-    .radio-opt label:hover { border-color: #93c5fd; background: #eff6ff; }
-    .radio-opt input:checked + label {
-      border-color: #2563eb;
-      background: #eff6ff;
-      color: #1e3a8a;
-    }
+    .radio-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .radio-opt label { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: #f9fafb; }
+    .radio-opt input:checked + label { border-color: #2563eb; background: #eff6ff; color: #1e3a8a; }
 
-    /* Warning Box (yellow) */
-    .warning-box {
-      background: #fffbeb;
-      border: 1.5px solid #fcd34d;
-      border-left: 5px solid #f59e0b;
-      border-radius: 12px;
-      padding: 22px 24px;
-      margin-top: 16px;
-    }
-    .warning-title {
-      font-size: 1rem;
-      font-weight: 800;
-      color: #92400e;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .warning-lead { font-size: 0.9rem; color: #78350f; margin-bottom: 12px; line-height: 1.6; }
-    .warning-label { font-size: 0.88rem; font-weight: 700; color: #92400e; margin-bottom: 6px; }
-    .warning-list { list-style: none; padding: 0; margin-bottom: 14px; }
-    .warning-list li {
-      display: flex; align-items: flex-start; gap: 8px;
-      padding: 5px 0; font-size: 0.88rem; color: #78350f; line-height: 1.5;
-    }
-    .warning-note {
-      font-size: 0.87rem; color: #92400e;
-      background: rgba(245,158,11,0.12);
-      border-radius: 8px; padding: 12px 14px;
-      line-height: 1.6; margin-bottom: 16px;
-    }
-    .warning-confirm {
-      display: flex; align-items: flex-start; gap: 10px;
-      background: rgba(245,158,11,0.08);
-      border-radius: 8px; padding: 12px 14px;
-    }
-    .warning-confirm input[type="checkbox"] {
-      width: 18px; height: 18px;
-      accent-color: #d97706;
-      flex-shrink: 0; margin-top: 2px; cursor: pointer;
-    }
-    .warning-confirm label {
-      font-size: 0.88rem; font-weight: 600;
-      color: #92400e; cursor: pointer; line-height: 1.5;
-    }
+    .warning-box { background: #fffbeb; border: 1.5px solid #fcd34d; border-left: 5px solid #f59e0b; border-radius: 12px; padding: 22px 24px; margin-top: 16px; }
+    .app-warning { background: #fff7ed; border: 1.5px solid #fdba74; border-left: 5px solid #f97316; border-radius: 12px; padding: 20px 24px; margin-top: 16px; }
 
-    /* App Warning (orange) */
-    .app-warning {
-      background: #fff7ed;
-      border: 1.5px solid #fdba74;
-      border-left: 5px solid #f97316;
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-top: 16px;
-    }
-    .app-warning-title {
-      font-size: 0.95rem; font-weight: 700; color: #9a3412;
-      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-    }
-    .app-warning-body { font-size: 0.88rem; color: #9a3412; line-height: 1.7; }
-
-    /* Divider */
     hr { border: none; border-top: 1px solid #e5e7eb; margin: 30px 0; }
 
-    /* Submit */
-    .submit-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.4px;
-      transition: all 0.2s;
-    }
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(37,99,235,0.38);
-    }
-    .submit-btn:active { transform: translateY(0); }
+    /* Submit & Action Buttons */
+    .btn-group { display: flex; gap: 12px; margin-top: 24px; }
+    .btn { flex: 1; padding: 16px; color: #fff; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .btn-primary { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.38); }
+    .btn-secondary { background: #64748b; }
+    .btn-secondary:hover:not(:disabled) { background: #475569; }
+    .btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* Footer */
-    .footer { text-align: center; margin-top: 24px; font-size: 0.8rem; color: #9ca3af; }
-
-    /* Hidden */
     .hidden { display: none !important; }
-
-    /* Responsive */
-    @media (max-width: 580px) {
-      body { padding: 0 0 40px; }
-      .header { border-radius: 0; padding: 28px 20px; }
-      .header h1 { font-size: 1.25rem; }
-      .form-card { border-radius: 0; padding: 24px 18px; }
-      .product-grid { grid-template-columns: 1fr 1fr; }
-      .field-group.cols { grid-template-columns: 1fr; }
-      .radio-group { flex-direction: column; }
-    }
   </style>
 </head>
 <body>
 
 <div class="container">
 
-  <div class="header">
-    <h1>📋 Formulário de Aquisição</h1>
-    <p>Preencha os dados abaixo para solicitar a instalação do seu equipamento de pagamento</p>
+  <div class="header" id="mainHeader">
+    <h1>?? Formul�rio de Aquisi��o</h1>
+    <p>Preencha os dados abaixo para solicitar a instala��o do seu equipamento de pagamento</p>
   </div>
 
-  <div class="form-card">
-    <form
-      id="mainForm"
-      name="aquisicao-tef-smartpos"
-      method="POST"
-      data-netlify="true"
-      data-netlify-honeypot="bot-field"
-    >
-      <input type="hidden" name="form-name" value="aquisicao-tef-smartpos" />
-      <input type="hidden" name="bot-field" />
-
-      <!-- SEÇÃO 1 — Tipo de Equipamento -->
+  <div class="form-card" id="formContainer">
+    <!-- FORMUL�RIO DE ENTRADA -->
+    <form id="mainForm">
+      
+      <!-- SE��O 1 � Tipo de Equipamento -->
       <div class="section">
-        <div class="section-title">
-          <div class="step-badge">1</div>
-          Tipo de Equipamento
-        </div>
-        <p style="font-size:0.88rem;color:#6b7280;margin-bottom:14px;">
-          Selecione o produto que você vai utilizar:
-        </p>
+        <div class="section-title"><div class="step-badge">1</div>Tipo de Equipamento</div>
         <div class="product-grid">
           <div class="product-option">
             <input type="radio" id="opt-tef" name="produto" value="TEF" required />
             <label for="opt-tef">
-              <span class="product-icon">🖥️</span>
+              <div class="product-img-box">
+                <img src="TEF.jpg" alt="Equipamento TEF" />
+                <div class="blur-tef"></div> <!-- Cobre a logo da Gertec -->
+              </div>
               <span class="product-name">TEF</span>
               <span class="product-desc">Terminal integrado ao computador / caixa</span>
             </label>
           </div>
           <div class="product-option">
-            <input type="radio" id="opt-smartpos" name="produto" value="SMARTPOS" />
+            <input type="radio" id="opt-smartpos" name="produto" value="SMARTPOS" required />
             <label for="opt-smartpos">
-              <span class="product-icon">📱</span>
+              <div class="product-img-box">
+                <img src="SMARTPOS.jpg" alt="Equipamento SMARTPOS" />
+                <div class="blur-spos"></div> <!-- Cobre a logo da Stone -->
+              </div>
               <span class="product-name">SMARTPOS</span>
               <span class="product-desc">Maquininha inteligente com Android</span>
             </label>
@@ -339,326 +175,161 @@
 
       <!-- BLOCO TEF -->
       <div id="section-tef" class="hidden">
-
-        <!-- Seção 2 — Equipamento e Adquirente -->
+        <!-- Equipamento e Adquirente -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">2</div>
-            Equipamento e Adquirente
-          </div>
-
+          <div class="section-title"><div class="step-badge">2</div>Equipamento e Adquirente</div>
           <div class="field-group cols">
-            <div class="field">
-              <label>Quantidade de Equipamentos <span class="req">*</span></label>
-              <input type="number" name="tef-quantidade" id="tef-qtd" min="1" placeholder="Ex: 2" disabled />
-            </div>
-            <div class="field">
-              <label>Adquirente <span class="req">*</span></label>
-              <input type="text" name="tef-adquirente" id="tef-adq" placeholder="Ex: REDE, CIELO, STONE..." disabled />
-            </div>
+            <div class="field"><label>Qtd. Equipamentos <span class="req">*</span></label><input type="number" name="tef-quantidade" id="tef-qtd" class="req-field" min="1" disabled /></div>
+            <div class="field"><label>Adquirente <span class="req">*</span></label><input type="text" name="tef-adquirente" id="tef-adq" class="req-field" placeholder="Ex: REDE, CIELO..." disabled /></div>
           </div>
-
-          <div class="info-box" style="margin-top:20px;">
-            <strong>📌 Solicite os seguintes códigos diretamente à sua adquirente antes de prosseguir:</strong>
-            <ul>
-              <li>Número de Afiliação</li>
-              <li>Número Lógico</li>
-            </ul>
-          </div>
-
-          <div class="field-group cols">
-            <div class="field">
-              <label>Número de Afiliação <span class="req">*</span></label>
-              <input type="text" name="tef-afiliacao" id="tef-afil" placeholder="Número de afiliação" disabled />
-            </div>
-            <div class="field">
-              <label>Número Lógico <span class="req">*</span></label>
-              <input type="text" name="tef-logico" id="tef-log" placeholder="Número lógico" disabled />
-            </div>
+          <div class="field-group cols" style="margin-top:16px;">
+            <div class="field"><label>N�mero de Afilia��o <span class="req">*</span></label><input type="text" name="tef-afiliacao" id="tef-afil" class="req-field" disabled /></div>
+            <div class="field"><label>N�mero L�gico <span class="req">*</span></label><input type="text" name="tef-logico" id="tef-log" class="req-field" disabled /></div>
           </div>
         </div>
 
-        <!-- Seção 3 — Dados da Loja -->
+        <!-- Dados da Loja -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">3</div>
-            Dados da Loja
-          </div>
-
+          <div class="section-title"><div class="step-badge">3</div>Dados da Loja</div>
           <div class="field-group">
             <div class="field-group cols">
-              <div class="field">
-                <label>CNPJ <span class="req">*</span></label>
-                <input type="text" name="tef-cnpj" id="tef-cnpj"
-                       placeholder="00.000.000/0000-00" maxlength="18" disabled />
-              </div>
-              <div class="field">
-                <label>UF <span class="req">*</span></label>
-                <select name="tef-uf" id="tef-uf" disabled>
-                  <option value="">Selecione</option>
-                  <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
-                  <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
-                  <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
-                  <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
-                  <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
-                  <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
-                  <option>SP</option><option>SE</option><option>TO</option>
+              <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="tef-cnpj" id="tef-cnpj" class="req-field" maxlength="18" disabled /><span id="tef-loading" class="loading-indicator hidden">Buscando...</span></div>
+              <div class="field"><label>UF <span class="req">*</span></label>
+                <select name="tef-uf" id="tef-uf" class="req-field" disabled>
+                  <option value="">UF</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
                 </select>
               </div>
             </div>
-            <div class="field">
-              <label>Razão Social <span class="req">*</span></label>
-              <input type="text" name="tef-razao" id="tef-razao" placeholder="Razão social da empresa" disabled />
-            </div>
-            <div class="field">
-              <label>Nome Fantasia</label>
-              <input type="text" name="tef-fantasia" id="tef-fantasia" placeholder="Nome fantasia (se houver)" disabled />
-            </div>
-            <div class="field">
-              <label>Endereço <span class="req">*</span></label>
-              <input type="text" name="tef-endereco" id="tef-end" placeholder="Rua, número, complemento" disabled />
-            </div>
+            <div class="field"><label>Raz�o Social <span class="req">*</span></label><input type="text" name="tef-razao" id="tef-razao" class="req-field" disabled /></div>
+            <div class="field"><label>Nome Fantasia</label><input type="text" name="tef-fantasia" id="tef-fantasia" disabled /></div>
+            <div class="field"><label>Endere�o <span class="req">*</span></label><input type="text" name="tef-endereco" id="tef-end" class="req-field" disabled /></div>
             <div class="field-group cols">
-              <div class="field">
-                <label>Bairro <span class="req">*</span></label>
-                <input type="text" name="tef-bairro" id="tef-bairro" placeholder="Bairro" disabled />
-              </div>
-              <div class="field">
-                <label>Cidade <span class="req">*</span></label>
-                <input type="text" name="tef-cidade" id="tef-cidade" placeholder="Cidade" disabled />
-              </div>
+              <div class="field"><label>Bairro <span class="req">*</span></label><input type="text" name="tef-bairro" id="tef-bairro" class="req-field" disabled /></div>
+              <div class="field"><label>Cidade <span class="req">*</span></label><input type="text" name="tef-cidade" id="tef-cidade" class="req-field" disabled /></div>
             </div>
           </div>
         </div>
 
-        <!-- Seção 4 — Responsável pela Loja -->
+        <!-- Respons�vel Loja -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">4</div>
-            Responsável pela Loja
-          </div>
-
+          <div class="section-title"><div class="step-badge">4</div>Respons�vel pela Loja</div>
           <div class="subsection">
-            <div class="subsection-title">👤 Pessoa responsável pela gestão da loja</div>
             <div class="field-group">
-              <div class="field">
-                <label>Nome Completo <span class="req">*</span></label>
-                <input type="text" name="loja-nome" id="loja-nome" placeholder="Nome do responsável" disabled />
-              </div>
+              <div class="field"><label>Nome Completo <span class="req">*</span></label><input type="text" name="loja-nome" id="loja-nome" class="req-field" disabled /></div>
               <div class="field-group cols">
-                <div class="field">
-                  <label>E-mail <span class="req">*</span></label>
-                  <input type="email" name="loja-email" id="loja-email" placeholder="email@empresa.com.br" disabled />
-                </div>
-                <div class="field">
-                  <label>Telefone <span class="req">*</span></label>
-                  <input type="tel" name="loja-telefone" id="loja-tel"
-                         placeholder="(00) 00000-0000" maxlength="15" disabled />
-                </div>
+                <div class="field"><label>E-mail <span class="req">*</span></label><input type="email" name="loja-email" id="loja-email" class="req-field" disabled /></div>
+                <div class="field"><label>Telefone <span class="req">*</span></label><input type="tel" name="loja-telefone" id="loja-tel" class="req-field" maxlength="15" disabled /></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Seção 5 — Responsável pelo Site do TEF -->
+        <!-- Respons�vel Portal TEF -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">5</div>
-            Responsável pelo Site do TEF
-          </div>
-
-          <p style="font-size:0.9rem;color:#374151;line-height:1.65;margin-bottom:18px;">
-            O <strong>site do TEF</strong> é a plataforma utilizada para consultar
-            <strong>relatórios de vendas</strong>, emitir <strong>extratos de transações</strong>
-            e acompanhar todo o <strong>fluxo de pagamentos</strong> da sua loja.
-            É importante que a pessoa com acesso esteja disponível quando necessário.
-          </p>
-
-          <p style="font-size:0.9rem;font-weight:700;color:#374151;margin-bottom:4px;">
-            O responsável pelo site do TEF é o mesmo responsável pela loja?
-          </p>
-
+          <div class="section-title"><div class="step-badge">5</div>Respons�vel pelo Site do TEF</div>
+          <p style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">O respons�vel pelo site do TEF � o mesmo respons�vel pela loja?</p>
           <div class="radio-group">
-            <div class="radio-opt">
-              <input type="radio" id="mesmo-sim" name="mesmo-responsavel" value="SIM" />
-              <label for="mesmo-sim">✅ Sim, é a mesma pessoa</label>
-            </div>
-            <div class="radio-opt">
-              <input type="radio" id="mesmo-nao" name="mesmo-responsavel" value="NÃO" />
-              <label for="mesmo-nao">👥 Não, são pessoas diferentes</label>
-            </div>
+            <div class="radio-opt"><input type="radio" id="mesmo-sim" name="mesmo-responsavel" value="SIM" disabled /><label for="mesmo-sim">? Sim, � a mesma pessoa</label></div>
+            <div class="radio-opt"><input type="radio" id="mesmo-nao" name="mesmo-responsavel" value="N�O" disabled /><label for="mesmo-nao">?? N�o, s�o pessoas diferentes</label></div>
           </div>
-
-          <!-- Aviso amarelo — SIM -->
           <div class="warning-box hidden" id="warning-mesmo">
-            <div class="warning-title">⚠️ Atenção — Verifique antes de continuar</div>
-            <p class="warning-lead">
-              Você informou que o responsável pelo site do TEF é a
-              <strong>mesma pessoa responsável pela loja</strong>.
-            </p>
-            <p class="warning-label">O site do TEF é utilizado para:</p>
-            <ul class="warning-list">
-              <li>📊 Consulta de <strong>relatórios de vendas</strong></li>
-              <li>🧾 Emissão de <strong>extratos de transações</strong></li>
-              <li>🔄 Acompanhamento do <strong>fluxo de TEF</strong> — autorizações, cancelamentos e conciliações</li>
-              <li>🛠️ Resolução de <strong>situações operacionais urgentes</strong></li>
-            </ul>
-            <div class="warning-note">
-              Se essa pessoa estiver <strong>ausente, de férias ou indisponível por qualquer motivo</strong>,
-              ninguém mais terá acesso ao portal para consultar informações ou resolver problemas —
-              o que pode <strong>impactar diretamente a operação da sua loja</strong>.<br /><br />
-              Caso exista outra pessoa que possa assumir esse acesso, recomendamos
-              cadastrá-la como responsável pelo site do TEF.
-            </div>
+            <div class="warning-title">?? Aten��o � Verifique antes de continuar</div>
+            <p style="font-size:0.85rem;margin-bottom:10px;">Se essa pessoa ficar indispon�vel, ningu�m ter� acesso ao portal para resolver problemas.</p>
             <div class="warning-confirm">
-              <input type="checkbox" id="confirmar-mesmo" name="confirmar-mesmo" value="Confirmado" />
-              <label for="confirmar-mesmo">
-                Estou ciente dos riscos e desejo continuar utilizando o mesmo responsável para a loja e para o site do TEF.
-              </label>
+              <input type="checkbox" id="confirmar-mesmo" disabled />
+              <label for="confirmar-mesmo">Estou ciente e desejo continuar usando o mesmo respons�vel.</label>
             </div>
           </div>
-
-          <!-- Campos do Portal — NÃO -->
           <div class="subsection hidden" id="campos-portal">
-            <div class="subsection-title">🌐 Pessoa responsável pelo acesso ao site do TEF</div>
             <div class="field-group">
-              <div class="field">
-                <label>Nome Completo <span class="req">*</span></label>
-                <input type="text" name="portal-nome" id="portal-nome" placeholder="Nome do responsável" disabled />
-              </div>
+              <div class="field"><label>Nome <span class="req">*</span></label><input type="text" name="portal-nome" id="portal-nome" class="req-field" disabled /></div>
               <div class="field-group cols">
-                <div class="field">
-                  <label>E-mail <span class="req">*</span></label>
-                  <input type="email" name="portal-email" id="portal-email" placeholder="email@empresa.com.br" disabled />
-                </div>
-                <div class="field">
-                  <label>Telefone <span class="req">*</span></label>
-                  <input type="tel" name="portal-telefone" id="portal-tel"
-                         placeholder="(00) 00000-0000" maxlength="15" disabled />
-                </div>
+                <div class="field"><label>E-mail <span class="req">*</span></label><input type="email" name="portal-email" id="portal-email" class="req-field" disabled /></div>
+                <div class="field"><label>Telefone <span class="req">*</span></label><input type="tel" name="portal-telefone" id="portal-tel" class="req-field" maxlength="15" disabled /></div>
               </div>
             </div>
           </div>
         </div>
-
       </div><!-- /section-tef -->
 
       <!-- BLOCO SMARTPOS -->
       <div id="section-smartpos" class="hidden">
-
-        <!-- Seção 2 — Dados da Empresa -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">2</div>
-            Dados da Empresa
-          </div>
-
+          <div class="section-title"><div class="step-badge">2</div>Dados da Empresa</div>
           <div class="field-group">
-            <div class="field">
-              <label>CNPJ <span class="req">*</span></label>
-              <input type="text" name="spos-cnpj" id="spos-cnpj"
-                     placeholder="00.000.000/0000-00" maxlength="18" disabled />
-            </div>
-            <div class="field">
-              <label>Razão Social <span class="req">*</span></label>
-              <input type="text" name="spos-razao" id="spos-razao" placeholder="Razão social da empresa" disabled />
-            </div>
-            <div class="field">
-              <label>Nome Fantasia</label>
-              <input type="text" name="spos-fantasia" id="spos-fantasia" placeholder="Nome fantasia (se houver)" disabled />
-            </div>
+            <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="spos-cnpj" id="spos-cnpj" class="req-field" maxlength="18" disabled /><span id="spos-loading" class="loading-indicator hidden">Buscando...</span></div>
+            <div class="field"><label>Raz�o Social <span class="req">*</span></label><input type="text" name="spos-razao" id="spos-razao" class="req-field" disabled /></div>
+            <div class="field"><label>Nome Fantasia</label><input type="text" name="spos-fantasia" id="spos-fantasia" disabled /></div>
           </div>
         </div>
-
-        <!-- Seção 3 — Dados da Maquininha -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">3</div>
-            Dados da Maquininha
-          </div>
-
+          <div class="section-title"><div class="step-badge">3</div>Dados da Maquininha</div>
           <div class="field-group">
-            <div class="field">
-              <label>Número de Série <span class="req">*</span></label>
-              <input type="text" name="spos-serie" id="spos-serie"
-                     placeholder="Número de série (encontrado na etiqueta da maquininha)" disabled />
-            </div>
-            <div class="field">
-              <label>Modelo da Maquininha <span class="req">*</span></label>
-              <input type="text" name="spos-modelo" id="spos-modelo"
-                     placeholder="Ex: Sunmi P2, PAX A920, Gertec GPOS 700..." disabled />
-            </div>
+            <div class="field"><label>N�mero de S�rie <span class="req">*</span></label><input type="text" name="spos-serie" id="spos-serie" class="req-field" disabled /></div>
+            <div class="field"><label>Modelo <span class="req">*</span></label><input type="text" name="spos-modelo" id="spos-modelo" class="req-field" disabled /></div>
           </div>
         </div>
-
-        <!-- Seção 4 — Aplicativo -->
         <div class="section">
-          <div class="section-title">
-            <div class="step-badge">4</div>
-            Aplicativo AppSuperTEF
-          </div>
-
-          <p style="font-size:0.9rem;color:#374151;line-height:1.65;margin-bottom:18px;">
-            O aplicativo <strong>AppSuperTEF</strong> é obrigatório para o funcionamento correto
-            do SMARTPOS e deve estar instalado antes da ativação.
-          </p>
-
-          <p style="font-size:0.9rem;font-weight:700;color:#374151;margin-bottom:4px;">
-            O aplicativo "AppSuperTEF" já está instalado na sua maquininha?
-          </p>
-
+          <div class="section-title"><div class="step-badge">4</div>Aplicativo AppSuperTEF</div>
+          <p style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">O aplicativo j� est� instalado na maquininha?</p>
           <div class="radio-group">
-            <div class="radio-opt">
-              <input type="radio" id="app-sim" name="app-instalado" value="SIM" />
-              <label for="app-sim">✅ Sim, já está instalado</label>
-            </div>
-            <div class="radio-opt">
-              <input type="radio" id="app-nao" name="app-instalado" value="NÃO" />
-              <label for="app-nao">❌ Não, ainda não instalei</label>
-            </div>
+            <div class="radio-opt"><input type="radio" id="app-sim" name="app-instalado" value="SIM" disabled /><label for="app-sim">? Sim</label></div>
+            <div class="radio-opt"><input type="radio" id="app-nao" name="app-instalado" value="N�O" disabled /><label for="app-nao">? N�o</label></div>
           </div>
-
-          <!-- Aviso laranja — NÃO -->
           <div class="app-warning hidden" id="warning-app">
-            <div class="app-warning-title">📥 Como instalar o AppSuperTEF</div>
-            <div class="app-warning-body">
-              Acesse a <strong>loja de aplicativos</strong> da sua maquininha e faça o download
-              do aplicativo <strong>"AppSuperTEF"</strong>.<br /><br />
-              Caso ocorra algum erro ou dificuldade durante o download, entre em contato
-              diretamente com o <strong>suporte da sua adquirente</strong> para solucionar
-              a situação antes de prosseguir com o cadastro.
-            </div>
+            <div class="app-warning-title">?? Como instalar o AppSuperTEF</div>
+            <div class="app-warning-body">Fa�a o download na loja de aplicativos da maquininha antes de prosseguir.</div>
           </div>
         </div>
-
       </div><!-- /section-smartpos -->
 
-      <!-- Botão de Envio -->
       <div id="submit-area" class="hidden">
         <hr />
-        <button type="submit" class="submit-btn">
-          📤 Enviar Solicitação
-        </button>
+        <button type="button" class="btn btn-primary" id="btn-revisar">?? Revisar Dados</button>
       </div>
-
     </form>
+
+    <!-- TELA DE REVIS�O -->
+    <div id="reviewArea" class="hidden">
+      <h2 style="color:#1e3a8a;margin-bottom:10px;">Revis�o da Solicita��o</h2>
+      <p style="font-size:0.9rem;color:#4b5563;margin-bottom:24px;">Confira se todos os dados abaixo est�o corretos antes de enviar.</p>
+      
+      <div id="reviewContainer"></div>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary" id="btn-voltar">?? Voltar e Editar</button>
+        <button type="button" class="btn btn-primary" id="btn-confirmar">? Confirmar e Enviar</button>
+      </div>
+    </div>
+
   </div>
 
-  <div class="footer">Formulário de Aquisição TEF / SMARTPOS</div>
-
+  <div class="success-card hidden" id="successCard">
+    <div class="success-icon">?</div>
+    <div class="success-title">Solicita��o Enviada!</div>
+    <div class="success-text">
+      O n�mero do seu protocolo �: <strong id="protocolo-view" style="color:#1e3a8a;"></strong><br/><br/>
+      Nossa equipe far� a confer�ncia e entrar� em contato em breve para finalizar a instala��o.
+    </div>
+  </div>
 </div>
 
 <script>
   const $ = id => document.getElementById(id);
-
   function show(el) { el.classList.remove('hidden'); }
   function hide(el) { el.classList.add('hidden'); }
 
+  let currentProtocol = '';
+  let emailData = {};
+
   function setSection(id, enabled) {
-    $(id).querySelectorAll('input, select').forEach(f => f.disabled = !enabled);
+    $(id).querySelectorAll('input, select').forEach(f => {
+      f.disabled = !enabled;
+      if (f.classList.contains('req-field')) f.required = enabled;
+    });
   }
 
-  /* Máscaras */
+  // Mascaras e API CNPJ
   function maskCNPJ(v) {
     v = v.replace(/\D/g, '').slice(0, 14);
     if (v.length > 12) return v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})$/, '$1.$2.$3/$4-$5');
@@ -675,110 +346,187 @@
     return v;
   }
 
+  async function buscarCNPJ(cnpj, prefixo) {
+    const limpo = cnpj.replace(/\D/g, '');
+    if (limpo.length !== 14) return;
+    const ind = $(prefixo + '-loading'); if (ind) show(ind);
+    try {
+      const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${limpo}`);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if ($(prefixo + '-razao')) $(prefixo + '-razao').value = data.razao_social || '';
+      if ($(prefixo + '-fantasia')) $(prefixo + '-fantasia').value = data.nome_fantasia || '';
+      if (prefixo === 'tef') {
+        const rua = data.logradouro ? `${data.descricao_tipo_de_logradouro} ${data.logradouro}` : '';
+        const num = data.numero ? `, ${data.numero}` : '';
+        $('tef-end').value = `${rua}${num}`.trim();
+        $('tef-bairro').value = data.bairro || '';
+        $('tef-cidade').value = data.municipio || '';
+        $('tef-uf').value = data.uf || '';
+      }
+    } catch (e) {} finally { if (ind) hide(ind); }
+  }
+
   ['tef-cnpj','spos-cnpj'].forEach(id => {
-    const el = $(id);
-    if (el) el.addEventListener('input', e => e.target.value = maskCNPJ(e.target.value));
-  });
-  ['loja-tel','portal-tel'].forEach(id => {
-    const el = $(id);
-    if (el) el.addEventListener('input', e => e.target.value = maskPhone(e.target.value));
+    if ($(id)) {
+      $(id).addEventListener('input', e => {
+        e.target.value = maskCNPJ(e.target.value);
+        if (e.target.value.length === 18) buscarCNPJ(e.target.value, id.split('-')[0]);
+      });
+    }
   });
 
-  /* Seleção de produto */
+  ['loja-tel','portal-tel'].forEach(id => {
+    if ($(id)) $(id).addEventListener('input', e => e.target.value = maskPhone(e.target.value));
+  });
+
+  // Toggle sections
   document.querySelectorAll('input[name="produto"]').forEach(r => {
     r.addEventListener('change', function () {
-      const isTEF  = this.value === 'TEF';
-      const isSPOS = this.value === 'SMARTPOS';
-
+      const isTEF = this.value === 'TEF';
       $('section-tef').classList.toggle('hidden', !isTEF);
-      $('section-smartpos').classList.toggle('hidden', !isSPOS);
-
-      setSection('section-tef',      isTEF);
-      setSection('section-smartpos', isSPOS);
-
-      resetPortal();
-      resetApp();
-      show($('submit-area'));
-
-      setTimeout(() => {
-        (isTEF ? $('section-tef') : $('section-smartpos'))
-          .scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
+      $('section-smartpos').classList.toggle('hidden', isTEF);
+      setSection('section-tef', isTEF);
+      setSection('section-smartpos', !isTEF);
+      resetPortal(); resetApp(); show($('submit-area'));
     });
   });
 
-  /* Responsável pelo Portal (TEF) */
   function resetPortal() {
-    document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => r.checked = false);
-    hide($('warning-mesmo'));
-    hide($('campos-portal'));
-    $('confirmar-mesmo').checked = false;
-    $('campos-portal').querySelectorAll('input').forEach(f => f.disabled = true);
+    document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => { r.checked = false; r.required = true; });
+    hide($('warning-mesmo')); hide($('campos-portal'));
+    $('confirmar-mesmo').checked = false; $('confirmar-mesmo').required = false;
+    $('campos-portal').querySelectorAll('input').forEach(f => { f.disabled = true; f.required = false; });
   }
-
   document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => {
     r.addEventListener('change', function () {
       const isSim = this.value === 'SIM';
       $('warning-mesmo').classList.toggle('hidden', !isSim);
-      $('campos-portal').classList.toggle('hidden',  isSim);
-      $('campos-portal').querySelectorAll('input').forEach(f => f.disabled = isSim);
-      if (isSim) {
-        setTimeout(() =>
-          $('warning-mesmo').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
-      }
+      $('campos-portal').classList.toggle('hidden', isSim);
+      $('confirmar-mesmo').disabled = !isSim; $('confirmar-mesmo').required = isSim;
+      $('campos-portal').querySelectorAll('input').forEach(f => { f.disabled = isSim; if (f.classList.contains('req-field')) f.required = !isSim; });
     });
   });
 
-  /* App SMARTPOS */
   function resetApp() {
-    document.querySelectorAll('input[name="app-instalado"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[name="app-instalado"]').forEach(r => { r.checked = false; r.required = true; });
     hide($('warning-app'));
   }
-
   document.querySelectorAll('input[name="app-instalado"]').forEach(r => {
     r.addEventListener('change', function () {
-      const isNao = this.value === 'NÃO';
-      $('warning-app').classList.toggle('hidden', !isNao);
-      if (isNao) {
-        setTimeout(() =>
-          $('warning-app').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
-      }
+      $('warning-app').classList.toggle('hidden', this.value !== 'N�O');
     });
   });
 
-  /* Validação no envio */
-  $('mainForm').addEventListener('submit', function (e) {
-    const produto = document.querySelector('input[name="produto"]:checked');
-    if (!produto) {
-      e.preventDefault();
-      alert('Selecione o tipo de equipamento antes de enviar.');
-      return;
+  function getVal(id) { return $(id) ? $(id).value : ''; }
+
+  // REVISAR
+  $('btn-revisar').addEventListener('click', () => {
+    if (!$('mainForm').reportValidity()) return;
+    
+    const prod = document.querySelector('input[name="produto"]:checked').value;
+    let html = '';
+    
+    // Gerar Protocolo
+    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    const randomHex = Math.random().toString(16).slice(2, 6).toUpperCase();
+    currentProtocol = `${prod}-${dateStr}-${randomHex}`;
+
+    html += `<h3>?? Protocolo: ${currentProtocol}</h3>`;
+    html += `<div class="review-item"><strong>Equipamento:</strong> <span>${prod}</span></div>`;
+    
+    emailData = { prod, protocol: currentProtocol };
+
+    if (prod === 'TEF') {
+      html += `<div class="review-item"><strong>Quantidade:</strong> <span>${getVal('tef-qtd')}</span></div>`;
+      html += `<div class="review-item"><strong>Adquirente:</strong> <span>${getVal('tef-adq')}</span></div>`;
+      html += `<div class="review-item"><strong>Afilia��o:</strong> <span>${getVal('tef-afil')}</span></div>`;
+      html += `<div class="review-item"><strong>L�gico:</strong> <span>${getVal('tef-log')}</span></div>`;
+      html += `<div class="review-divider"></div>`;
+      html += `<div class="review-item"><strong>CNPJ:</strong> <span>${getVal('tef-cnpj')}</span></div>`;
+      html += `<div class="review-item"><strong>Raz�o Social:</strong> <span>${getVal('tef-razao')}</span></div>`;
+      html += `<div class="review-item"><strong>Fantasia:</strong> <span>${getVal('tef-fantasia')}</span></div>`;
+      html += `<div class="review-item"><strong>Endere�o:</strong> <span>${getVal('tef-end')} - ${getVal('tef-bairro')}, ${getVal('tef-cidade')}/${getVal('tef-uf')}</span></div>`;
+      html += `<div class="review-divider"></div>`;
+      html += `<div class="review-item"><strong>Resp. Loja:</strong> <span>${getVal('loja-nome')} (${getVal('loja-tel')})</span></div>`;
+      
+      const mesmo = document.querySelector('input[name="mesmo-responsavel"]:checked').value;
+      if (mesmo === 'SIM') {
+        html += `<div class="review-item"><strong>Resp. Portal:</strong> <span>O mesmo da loja</span></div>`;
+      } else {
+        html += `<div class="review-item"><strong>Resp. Portal:</strong> <span>${getVal('portal-nome')} (${getVal('portal-tel')})</span></div>`;
+      }
+
+      // Salva em emailData
+      emailData.cnpj = getVal('tef-cnpj'); emailData.razao = getVal('tef-razao'); emailData.fantasia = getVal('tef-fantasia');
+      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: TEF\nQTD: ${getVal('tef-qtd')}\nADQUIRENTE: ${getVal('tef-adq')}\nAFILIACAO: ${getVal('tef-afil')}\nLOGICO: ${getVal('tef-log')}\nCNPJ: ${getVal('tef-cnpj')}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${getVal('loja-email')} | ${getVal('loja-tel')}`;
+      if(mesmo==='SIM') {
+        emailData.txt += `\nRESP. PORTAL: MESMO DA LOJA`;
+      } else {
+        emailData.txt += `\nRESP. PORTAL: ${getVal('portal-nome')} | ${getVal('portal-email')} | ${getVal('portal-tel')}`;
+      }
+
+    } else {
+      html += `<div class="review-item"><strong>CNPJ:</strong> <span>${getVal('spos-cnpj')}</span></div>`;
+      html += `<div class="review-item"><strong>Raz�o Social:</strong> <span>${getVal('spos-razao')}</span></div>`;
+      html += `<div class="review-item"><strong>Fantasia:</strong> <span>${getVal('spos-fantasia')}</span></div>`;
+      html += `<div class="review-divider"></div>`;
+      html += `<div class="review-item"><strong>Num. S�rie:</strong> <span>${getVal('spos-serie')}</span></div>`;
+      html += `<div class="review-item"><strong>Modelo:</strong> <span>${getVal('spos-modelo')}</span></div>`;
+      
+      const app = document.querySelector('input[name="app-instalado"]:checked').value;
+      html += `<div class="review-item"><strong>App Instalado:</strong> <span>${app}</span></div>`;
+      
+      emailData.cnpj = getVal('spos-cnpj'); emailData.razao = getVal('spos-razao'); emailData.fantasia = getVal('spos-fantasia');
+      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: SMARTPOS\nCNPJ: ${getVal('spos-cnpj')}\nRAZAO: ${getVal('spos-razao')}\nFANTASIA: ${getVal('spos-fantasia')}\nSERIE: ${getVal('spos-serie')}\nMODELO: ${getVal('spos-modelo')}\nAPP_INSTALADO: ${app}`;
     }
 
-    if (produto.value === 'TEF') {
-      const mesmoResp = document.querySelector('input[name="mesmo-responsavel"]:checked');
-      if (!mesmoResp) {
-        e.preventDefault();
-        document.querySelector('input[name="mesmo-responsavel"]')
-          .closest('.section').scrollIntoView({ behavior: 'smooth' });
-        alert('Informe se o responsável pelo site do TEF é o mesmo da loja.');
-        return;
-      }
-      if (mesmoResp.value === 'SIM' && !$('confirmar-mesmo').checked) {
-        e.preventDefault();
-        $('warning-mesmo').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        alert('Para continuar, marque a confirmação de ciência no aviso amarelo.');
-        return;
-      }
-    }
+    $('reviewContainer').innerHTML = html;
+    hide($('mainForm'));
+    show($('reviewArea'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
-    if (produto.value === 'SMARTPOS') {
-      if (!document.querySelector('input[name="app-instalado"]:checked')) {
-        e.preventDefault();
-        alert('Informe se o aplicativo AppSuperTEF está instalado na maquininha.');
-        return;
-      }
-    }
+  $('btn-voltar').addEventListener('click', () => {
+    hide($('reviewArea')); show($('mainForm'));
+  });
+
+  $('btn-confirmar').addEventListener('click', function() {
+    const btn = this;
+    const btnV = $('btn-voltar');
+    btn.innerHTML = '? Enviando...'; btn.disabled = true; btnV.disabled = true;
+
+    const nome_empresa = emailData.fantasia || emailData.razao;
+    const _subject = `Nova Solicita��o ${nome_empresa} (Equipamento ${emailData.prod}) #${currentProtocol}`;
+
+    // Vamos criar o objeto para envio via FormSubmit (ou Make futuramente)
+    const formData = new FormData();
+    formData.append('_subject', _subject);
+    formData.append('_template', 'box');
+    formData.append('PROTOCOLO', currentProtocol);
+    formData.append('DADOS_COMPLETOS', emailData.txt);
+    
+    // Gerar TXT nativo e anexar (O FormSubmit aceita anexo via input file, ent�o vamos criar um File via JS)
+    const blob = new Blob([emailData.txt], { type: 'text/plain' });
+    const file = new File([blob], `dados-${currentProtocol}.txt`);
+    formData.append('attachment', file);
+
+    // Envio AJAX para o FormSubmit no seu email
+    fetch('https://formsubmit.co/ajax/davisilvace@gmail.com', {
+      method: 'POST',
+      body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+      $('protocolo-view').innerText = currentProtocol;
+      hide($('reviewArea')); hide($('mainHeader'));
+      show($('successCard'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+    .catch(e => {
+      alert("Erro ao enviar! O Netlify/FormSubmit pode estar bloqueando sem ativa��o. Tente novamente.");
+      btn.innerHTML = '? Confirmar e Enviar'; btn.disabled = false; btnV.disabled = false;
+    });
   });
 </script>
 
