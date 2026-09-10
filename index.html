@@ -108,10 +108,7 @@
             <div class="field"><label>Qtd. Equipamentos <span class="req">*</span></label><input type="number" name="tef-quantidade" id="tef-qtd" class="req-field" min="1" disabled /></div>
             <div class="field"><label>Adquirente <span class="req">*</span></label><input type="text" name="tef-adquirente" id="tef-adq" class="req-field" placeholder="Ex: REDE, CIELO..." disabled /></div>
           </div>
-          <div class="field-group cols" style="margin-top:16px;">
-            <div class="field"><label>Número de Afiliação <span class="req">*</span></label><input type="text" name="tef-afiliacao" id="tef-afil" class="req-field" disabled /></div>
-            <div class="field"><label>Número Lógico <span class="req">*</span></label><input type="text" name="tef-logico" id="tef-log" class="req-field" disabled /></div>
-          </div>
+          <div id="tef-terminais-container" style="margin-top:16px; display:flex; flex-direction:column; gap:12px;"></div>
         </div>
         <div class="section">
           <div class="section-title"><div class="step-badge">3</div>Dados da Loja</div>
@@ -294,6 +291,73 @@
   ['loja-tel','portal-tel','spos-tel'].forEach(id => {
     if ($(id)) $(id).addEventListener('input', e => e.target.value = maskPhone(e.target.value));
   });
+  function renderTerminaisTEF(qtd) {
+    const container = $('tef-terminais-container');
+    if (!container) return;
+    const count = parseInt(qtd, 10) || 0;
+    if (count <= 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    // Salvar valores atuais digitados para não perder se o usuário mudar a quantidade
+    const saved = [];
+    container.querySelectorAll('.tef-terminal-row').forEach(row => {
+      const afil = row.querySelector('.tef-afil-input')?.value || '';
+      const log = row.querySelector('.tef-log-input')?.value || '';
+      saved.push({ afil, log });
+    });
+
+    let html = '';
+    for (let i = 1; i <= count; i++) {
+      const valAfil = saved[i - 1]?.afil || '';
+      const valLog = saved[i - 1]?.log || '';
+      const labelCaixa = count === 1 ? 'Terminal / Caixa' : `Equipamento ${i} (Caixa ${i})`;
+      
+      html += `
+        <div class="tef-terminal-row" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px;">
+          <div style="font-size:0.85rem; font-weight:700; color:#1e3a8a; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span>💻 ${labelCaixa}</span>
+            ${i === 1 && count > 1 ? '<button type="button" id="btn-replicar-tef" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; border-radius:6px; font-size:0.75rem; padding:4px 8px; cursor:pointer; font-weight:600;">📋 Copiar dados para todos</button>' : ''}
+          </div>
+          <div class="field-group cols">
+            <div class="field">
+              <label>Número de Afiliação <span class="req">*</span></label>
+              <input type="text" class="req-field tef-afil-input" data-index="${i}" value="${valAfil}" required />
+            </div>
+            <div class="field">
+              <label>Número Lógico <span class="req">*</span></label>
+              <input type="text" class="req-field tef-log-input" data-index="${i}" value="${valLog}" required />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+
+    const isTefActive = !$('section-tef').classList.contains('hidden');
+    container.querySelectorAll('input').forEach(f => {
+      f.disabled = !isTefActive;
+      if (f.classList.contains('req-field')) f.required = isTefActive;
+    });
+
+    const btnReplicar = $('btn-replicar-tef');
+    if (btnReplicar) {
+      btnReplicar.addEventListener('click', () => {
+        const primeiroAfil = container.querySelector('.tef-afil-input[data-index="1"]')?.value || '';
+        const primeiroLog = container.querySelector('.tef-log-input[data-index="1"]')?.value || '';
+        container.querySelectorAll('.tef-afil-input').forEach(input => input.value = primeiroAfil);
+        container.querySelectorAll('.tef-log-input').forEach(input => input.value = primeiroLog);
+      });
+    }
+  }
+
+  if ($('tef-qtd')) {
+    $('tef-qtd').addEventListener('input', e => {
+      renderTerminaisTEF(e.target.value);
+    });
+  }
+
   document.querySelectorAll('input[name="produto"]').forEach(r => {
     r.addEventListener('change', function () {
       const isTEF = this.value === 'TEF';
@@ -301,6 +365,10 @@
       $('section-smartpos').classList.toggle('hidden', isTEF);
       setSection('section-tef', isTEF);
       setSection('section-smartpos', !isTEF);
+      if (isTEF && !$('tef-qtd').value) {
+        $('tef-qtd').value = '1';
+        renderTerminaisTEF(1);
+      }
       resetPortal(); resetApp(); show($('submit-area'));
     });
   });
@@ -340,10 +408,21 @@
     html += `<div class="review-item"><strong>Equipamento:</strong> <span>${prod}</span></div>`;
     emailData = { prod, protocol: currentProtocol };
     if (prod === 'TEF') {
-      html += `<div class="review-item"><strong>Quantidade:</strong> <span>${getVal('tef-qtd')}</span></div>`;
+      const count = parseInt(getVal('tef-qtd'), 10) || 1;
+      html += `<div class="review-item"><strong>Quantidade:</strong> <span>${count}</span></div>`;
       html += `<div class="review-item"><strong>Adquirente:</strong> <span>${getVal('tef-adq')}</span></div>`;
-      html += `<div class="review-item"><strong>Afiliação:</strong> <span>${getVal('tef-afil')}</span></div>`;
-      html += `<div class="review-item"><strong>Lógico:</strong> <span>${getVal('tef-log')}</span></div>`;
+      
+      let txtTerminais = '';
+      const rows = $('tef-terminais-container').querySelectorAll('.tef-terminal-row');
+      rows.forEach((row, idx) => {
+        const num = idx + 1;
+        const afil = row.querySelector('.tef-afil-input')?.value || '';
+        const log = row.querySelector('.tef-log-input')?.value || '';
+        const rotulo = rows.length === 1 ? 'Terminal / Caixa' : `Equipamento ${num} (Caixa ${num})`;
+        html += `<div class="review-item" style="margin-top:6px;"><strong>${rotulo}:</strong> <span>Afiliação: ${afil} | Lógico: ${log}</span></div>`;
+        txtTerminais += `\nTERMINAL ${num}: AFILIACAO: ${afil} | LOGICO: ${log}`;
+      });
+
       html += `<div class="review-divider"></div>`;
       html += `<div class="review-item"><strong>CNPJ:</strong> <span>${getVal('tef-cnpj')}</span></div>`;
       html += `<div class="review-item"><strong>Razão Social:</strong> <span>${getVal('tef-razao')}</span></div>`;
@@ -359,7 +438,7 @@
       }
       emailData.fantasia = getVal('tef-fantasia'); emailData.razao = getVal('tef-razao');
       emailData.userEmail = getVal('loja-email');
-      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: TEF\nQTD: ${getVal('tef-qtd')}\nADQUIRENTE: ${getVal('tef-adq')}\nAFILIACAO: ${getVal('tef-afil')}\nLOGICO: ${getVal('tef-log')}\nCNPJ: ${getVal('tef-cnpj')}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${getVal('loja-email')} | ${getVal('loja-tel')}`;
+      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: TEF\nQTD: ${count}\nADQUIRENTE: ${getVal('tef-adq')}${txtTerminais}\nCNPJ: ${getVal('tef-cnpj')}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${getVal('loja-email')} | ${getVal('loja-tel')}`;
       if(mesmo==='SIM') emailData.txt += `\nRESP. PORTAL: MESMO DA LOJA`;
       else emailData.txt += `\nRESP. PORTAL: ${getVal('portal-nome')} | ${getVal('portal-email')} | ${getVal('portal-tel')}`;
     } else {
