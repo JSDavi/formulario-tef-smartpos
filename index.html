@@ -34,33 +34,18 @@
     .field input:focus, .field select:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
     .field input:disabled, .field select:disabled { opacity: 0.7; background: #e5e7eb; cursor: not-allowed; }
     .loading-indicator { position: absolute; right: 12px; top: 36px; font-size: 0.8rem; color: #2563eb; font-weight: bold; }
-    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; transition: all 0.3s ease; }
-    .product-grid.has-selection { grid-template-columns: 1fr; }
-    .product-option { position: relative; transition: all 0.3s ease; }
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+    .product-option { position: relative; }
     .product-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-    .product-option label { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; padding: 24px 16px; border: 2px solid #e5e7eb; border-radius: 14px; cursor: pointer; text-align: center; background: #f9fafb; transition: all 0.25s ease; height: 100%; position: relative; }
+    .product-option label { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; padding: 24px 16px; border: 2px solid #e5e7eb; border-radius: 14px; cursor: pointer; text-align: center; background: #f9fafb; transition: all 0.2s; height: 100%; }
     .product-option label:hover { border-color: #93c5fd; background: #eff6ff; }
-    .product-option input:checked + label { border-color: #2563eb; background: #eff6ff; box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
-    .product-img-box { position: relative; width: 100%; max-width: 220px; height: 210px; border-radius: 12px; overflow: hidden; background: #fff; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s ease; }
+    .product-option input:checked + label { border-color: #2563eb; background: #eff6ff; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+    .product-img-box { position: relative; width: 100%; max-width: 220px; height: 210px; border-radius: 12px; overflow: hidden; background: #fff; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
     .product-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-    
-    /* Modo Expandido: quando um produto é escolhido */
-    .product-option.is-selected { width: 100%; }
-    .product-option.is-selected label { padding: 28px 20px; background: #f0f7ff; border-color: #2563eb; cursor: default; }
-    .product-option.is-selected .product-img-box { max-width: 280px; height: 260px; box-shadow: 0 8px 24px rgba(37,99,235,0.12); }
-    .product-option.is-hidden { display: none !important; }
-    
-    .selected-tag { display: none; background: #2563eb; color: #fff; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .product-option.is-selected .selected-tag { display: inline-flex; align-items: center; gap: 4px; }
-    
-    .btn-change-device { display: none; margin-top: 10px; background: #fff; color: #2563eb; border: 1.5px solid #bfdbfe; padding: 6px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-    .btn-change-device:hover { background: #dbeafe; border-color: #93c5fd; }
-    .product-option.is-selected .btn-change-device { display: inline-block; }
-
     .blur-tef { position: absolute; top: 26%; left: 35%; width: 30%; height: 6%; background: #1a1a1a; filter: blur(3px); border-radius: 2px; }
     .blur-spos { position: absolute; bottom: 8%; left: 35%; width: 30%; height: 5%; background: #111; filter: blur(3px); border-radius: 2px; }
-    .product-name { font-size: 1.35rem; font-weight: 800; color: #1e3a8a; margin-top: 6px; }
-    .product-desc { font-size: 0.88rem; color: #6b7280; line-height: 1.4; }
+    .product-name { font-size: 1.25rem; font-weight: 800; color: #1e3a8a; margin-top: 6px; }
+    .product-desc { font-size: 0.85rem; color: #6b7280; line-height: 1.4; }
     .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #1e40af; line-height: 1.6; }
     .subsection { background: #f8fafc; border: 1px solid #e8edf5; border-radius: 12px; padding: 24px; margin-top: 16px; }
     .radio-group { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
@@ -90,31 +75,27 @@
     <form id="mainForm">
       <div class="section">
         <div class="section-title"><div class="step-badge">1</div>Tipo de Equipamento</div>
-        <div class="product-grid" id="productGrid">
-          <div class="product-option" id="card-tef">
+        <div class="product-grid">
+          <div class="product-option">
             <input type="radio" id="opt-tef" name="produto" value="TEF" required />
             <label for="opt-tef">
-              <span class="selected-tag">✓ Selecionado</span>
               <div class="product-img-box">
                 <img src="TEF.jpg" alt="Equipamento TEF" />
                 <div class="blur-tef"></div>
               </div>
               <span class="product-name">TEF</span>
               <span class="product-desc">Terminal integrado ao computador / caixa</span>
-              <button type="button" class="btn-change-device" id="btn-trocar-tef">🔄 Trocar equipamento</button>
             </label>
           </div>
-          <div class="product-option" id="card-smartpos">
+          <div class="product-option">
             <input type="radio" id="opt-smartpos" name="produto" value="SMARTPOS" required />
             <label for="opt-smartpos">
-              <span class="selected-tag">✓ Selecionado</span>
               <div class="product-img-box">
                 <img src="SMARTPOS.jpg" alt="Equipamento SMARTPOS" />
                 <div class="blur-spos"></div>
               </div>
               <span class="product-name">SMARTPOS</span>
               <span class="product-desc">Maquininha inteligente com Android</span>
-              <button type="button" class="btn-change-device" id="btn-trocar-smartpos">🔄 Trocar equipamento</button>
             </label>
           </div>
         </div>
@@ -377,59 +358,9 @@
     });
   }
 
-  function applyCardSelection(prod) {
-    const grid = $('productGrid');
-    const cardTef = $('card-tef');
-    const cardSmartpos = $('card-smartpos');
-
-    if (!prod) {
-      grid.classList.remove('has-selection');
-      cardTef.classList.remove('is-selected', 'is-hidden');
-      cardSmartpos.classList.remove('is-selected', 'is-hidden');
-      return;
-    }
-
-    grid.classList.add('has-selection');
-    if (prod === 'TEF') {
-      cardTef.classList.add('is-selected');
-      cardTef.classList.remove('is-hidden');
-      cardSmartpos.classList.remove('is-selected');
-      cardSmartpos.classList.add('is-hidden');
-    } else {
-      cardSmartpos.classList.add('is-selected');
-      cardSmartpos.classList.remove('is-hidden');
-      cardTef.classList.remove('is-selected');
-      cardTef.classList.add('is-hidden');
-    }
-  }
-
-  function resetDeviceSelection() {
-    document.querySelectorAll('input[name="produto"]').forEach(r => r.checked = false);
-    applyCardSelection(null);
-    $('section-tef').classList.add('hidden');
-    $('section-smartpos').classList.add('hidden');
-    setSection('section-tef', false);
-    setSection('section-smartpos', false);
-    hide($('submit-area'));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  $('btn-trocar-tef')?.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    resetDeviceSelection();
-  });
-
-  $('btn-trocar-smartpos')?.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    resetDeviceSelection();
-  });
-
   document.querySelectorAll('input[name="produto"]').forEach(r => {
     r.addEventListener('change', function () {
       const isTEF = this.value === 'TEF';
-      applyCardSelection(this.value);
       $('section-tef').classList.toggle('hidden', !isTEF);
       $('section-smartpos').classList.toggle('hidden', isTEF);
       setSection('section-tef', isTEF);
