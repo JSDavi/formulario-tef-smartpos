@@ -595,8 +595,16 @@
         show($('submit-area'));
       }
     } else if (prod === 'SMARTPOS') {
-      // Para SMARTPOS, exibe o botão se o fluxo estiver no formulário
-      show($('submit-area'));
+      // Para SMARTPOS, só exibe o botão se o app foi respondido e os campos de contato do responsável tiverem sido iniciados
+      const appResp = document.querySelector('input[name="app-instalado"]:checked')?.value;
+      const temNome = $('spos-nome')?.value.trim().length > 0;
+      const temEmail = $('spos-email')?.value.trim().length > 0;
+      
+      if (appResp && (temNome || temEmail)) {
+        show($('submit-area'));
+      } else {
+        hide($('submit-area'));
+      }
     }
   }
 
@@ -641,12 +649,18 @@
   function resetApp() {
     document.querySelectorAll('input[name="app-instalado"]').forEach(r => { r.checked = false; r.required = true; });
     hide($('warning-app'));
+    checkSubmitVisibility();
   }
 
   document.querySelectorAll('input[name="app-instalado"]').forEach(r => {
     r.addEventListener('change', function () {
       $('warning-app').classList.toggle('hidden', this.value !== 'NÃO');
+      checkSubmitVisibility();
     });
+  });
+
+  ['spos-nome', 'spos-email', 'spos-tel'].forEach(id => {
+    $(id)?.addEventListener('input', checkSubmitVisibility);
   });
   function getVal(id) { return $(id) ? $(id).value : ''; }
   function fecharModal() {
