@@ -705,24 +705,30 @@
 
     const nome_empresa = emailData.fantasia || emailData.razao;
     const _subject = `Nova Solicitação ${nome_empresa} (Equipamento ${emailData.prod}) #${currentProtocol}`;
-    const formData = new FormData();
-    formData.append('_subject', _subject);
-    formData.append('_template', 'box');
-    formData.append('PROTOCOLO', currentProtocol);
-    
-    if (emailData.userEmail) {
-      formData.append('email', emailData.userEmail);
-      const msgAuto = `Olá!\n\nFoi recebida com sucesso a solicitação de instalação do equipamento ${emailData.prod}.\n\nO número do seu protocolo é: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados enviados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.\n\nAtenciosamente,\nEquipe de Atendimento`;
-      formData.append('_autoresponse', msgAuto);
-    }
-    
-    formData.append('DADOS_COMPLETOS', emailData.txt);
-    const blob = new Blob([emailData.txt], { type: 'text/plain' });
-    const file = new File([blob], `dados-${currentProtocol}.txt`);
-    formData.append('attachment', file);
+    const payload = {
+      _subject: _subject,
+      _template: 'box',
+      PROTOCOLO: currentProtocol,
+      DADOS_COMPLETOS: emailData.txt
+    };
 
-    fetch('https://formsubmit.co/ajax/davisilvace@gmail.com', { method: 'POST', body: formData })
-    .then(r => r.json())
+    if (emailData.userEmail) {
+      payload.email = emailData.userEmail;
+      payload._autoresponse = `Olá!\n\nFoi recebida com sucesso a solicitação de instalação do equipamento ${emailData.prod}.\n\nO número do seu protocolo é: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados enviados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.\n\nAtenciosamente,\nEquipe de Atendimento`;
+    }
+
+    fetch('https://formsubmit.co/ajax/davisilvace@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(r => {
+      if (!r.ok) throw new Error('Falha no status HTTP ' + r.status);
+      return r.json();
+    })
     .then(data => {
       fecharModal();
       $('protocolo-view').innerText = currentProtocol;
@@ -732,7 +738,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     })
     .catch(e => {
-      alert("Erro ao enviar! O Netlify/FormSubmit pode estar bloqueando sem ativação. Tente novamente.");
+      alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
       btn.innerHTML = '✅ Sim, Enviar Agora';
       btn.disabled = false;
       btnCancel.disabled = false;
