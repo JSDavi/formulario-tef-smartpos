@@ -557,6 +557,31 @@
     });
   }
 
+  function checkSubmitVisibility() {
+    const prod = document.querySelector('input[name="produto"]:checked')?.value;
+    if (!prod) {
+      hide($('submit-area'));
+      return;
+    }
+
+    if (prod === 'TEF') {
+      const resp = document.querySelector('input[name="mesmo-responsavel"]:checked')?.value;
+      if (!resp) {
+        hide($('submit-area'));
+        return;
+      }
+      if (resp === 'SIM') {
+        const ciente = $('confirmar-mesmo').checked;
+        $('submit-area').classList.toggle('hidden', !ciente);
+      } else {
+        show($('submit-area'));
+      }
+    } else if (prod === 'SMARTPOS') {
+      // Para SMARTPOS, exibe o botão se o fluxo estiver no formulário
+      show($('submit-area'));
+    }
+  }
+
   document.querySelectorAll('input[name="produto"]').forEach(r => {
     r.addEventListener('change', function () {
       const isTEF = this.value === 'TEF';
@@ -568,15 +593,20 @@
         $('tef-qtd').value = '1';
         renderTerminaisTEF(1);
       }
-      resetPortal(); resetApp(); show($('submit-area'));
+      resetPortal();
+      resetApp();
+      checkSubmitVisibility();
     });
   });
+
   function resetPortal() {
     document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => { r.checked = false; r.required = true; });
     hide($('warning-mesmo')); hide($('campos-portal'));
     $('confirmar-mesmo').checked = false; $('confirmar-mesmo').required = false;
     $('campos-portal').querySelectorAll('input').forEach(f => { f.disabled = true; f.required = false; });
+    checkSubmitVisibility();
   }
+
   document.querySelectorAll('input[name="mesmo-responsavel"]').forEach(r => {
     r.addEventListener('change', function () {
       const isSim = this.value === 'SIM';
@@ -584,12 +614,17 @@
       $('campos-portal').classList.toggle('hidden', isSim);
       $('confirmar-mesmo').disabled = !isSim; $('confirmar-mesmo').required = isSim;
       $('campos-portal').querySelectorAll('input').forEach(f => { f.disabled = isSim; if (f.classList.contains('req-field')) f.required = !isSim; });
+      checkSubmitVisibility();
     });
   });
+
+  $('confirmar-mesmo')?.addEventListener('change', checkSubmitVisibility);
+
   function resetApp() {
     document.querySelectorAll('input[name="app-instalado"]').forEach(r => { r.checked = false; r.required = true; });
     hide($('warning-app'));
   }
+
   document.querySelectorAll('input[name="app-instalado"]').forEach(r => {
     r.addEventListener('change', function () {
       $('warning-app').classList.toggle('hidden', this.value !== 'NÃO');
