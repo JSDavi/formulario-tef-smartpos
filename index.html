@@ -235,9 +235,27 @@
       display: flex;
       gap: 12px;
     }
-    @media (max-width: 580px) {
-      .modal-card { padding: 24px 18px; }
+    @media (max-width: 640px) {
+      body { padding: 12px 8px 32px; overflow-x: hidden; }
+      .container { width: 100%; max-width: 100%; }
+      .header { padding: 24px 16px 20px; }
+      .header h1 { font-size: 1.3rem; }
+      .header p { font-size: 0.85rem; }
+      .form-card { padding: 20px 14px; }
+      
+      /* Força todas as colunas duplas a virarem 1 coluna no celular */
+      .field-group.cols { grid-template-columns: 1fr !important; gap: 14px; }
+      .field input, .field select { width: 100%; max-width: 100%; }
+
+      /* Cards de equipamento em coluna no mobile para não estourar */
+      .product-grid { grid-template-columns: 1fr; gap: 16px; }
+      .product-option:has(input:checked) { transform: none; }
+      .product-grid:has(input:checked) .product-option:not(:has(input:checked)) { transform: none; opacity: 0.75; }
+      .product-img-box { max-width: 180px; height: 180px; }
+
+      .modal-card { padding: 24px 16px; }
       .modal-actions { flex-direction: column-reverse; }
+      .btn { padding: 14px; font-size: 0.95rem; }
     }
   </style>
 </head>
