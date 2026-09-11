@@ -34,23 +34,105 @@
     .field input:focus, .field select:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
     .field input:disabled, .field select:disabled { opacity: 0.7; background: #e5e7eb; cursor: not-allowed; }
     .loading-indicator { position: absolute; right: 12px; top: 36px; font-size: 0.8rem; color: #2563eb; font-weight: bold; }
-    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
-    .product-option { position: relative; }
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; align-items: stretch; }
+    .product-option { position: relative; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
     .product-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-    .product-option label { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; padding: 24px 16px; border: 2px solid #e5e7eb; border-radius: 14px; cursor: pointer; text-align: center; background: #f9fafb; transition: all 0.2s; height: 100%; }
-    .product-option label:hover { border-color: #93c5fd; background: #eff6ff; }
-    .product-option input:checked + label { border-color: #2563eb; background: #eff6ff; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
-    .product-img-box { position: relative; width: 100%; max-width: 220px; height: 210px; border-radius: 12px; overflow: hidden; background: #fff; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    
+    .product-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 24px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: center;
+      background: #f9fafb;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 100%;
+      position: relative;
+    }
+    
+    /* Acessibilidade pelo Teclado (TAB) */
+    .product-option input:focus-visible + label {
+      outline: 3px solid #2563eb;
+      outline-offset: 3px;
+    }
+
+    .product-option label:hover {
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+
+    /* Card Selecionado: cresce, ganha elevação/sombra e toma a frente */
+    .product-option:has(input:checked) {
+      z-index: 5;
+      transform: scale(1.05);
+    }
+    .product-option input:checked + label {
+      border-color: #2563eb;
+      background: #f0f7ff;
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22), 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+    .product-option input:checked + label .product-name {
+      color: #1d4ed8;
+    }
+
+    /* Badge de confirmação no card selecionado */
+    .badge-selected {
+      display: none;
+      position: absolute;
+      top: -10px;
+      right: 14px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+    .product-option input:checked + label .badge-selected {
+      display: inline-block;
+      animation: popBadge 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes popBadge {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Quando há seleção na grade, o card não selecionado recua sutilmente */
+    .product-grid:has(input:checked) .product-option:not(:has(input:checked)) {
+      opacity: 0.65;
+      transform: scale(0.96);
+      filter: grayscale(20%);
+    }
+    .product-grid:has(input:checked) .product-option:not(:has(input:checked)):hover {
+      opacity: 0.9;
+      transform: scale(0.98);
+      filter: none;
+    }
+
+    .product-img-box { position: relative; width: 100%; max-width: 220px; height: 210px; border-radius: 12px; overflow: hidden; background: #fff; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.35s ease; }
     .product-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .product-option input:checked + label .product-img-box {
+      transform: scale(1.04);
+      border-color: #bfdbfe;
+    }
+
     .blur-tef { position: absolute; top: 26%; left: 35%; width: 30%; height: 6%; background: #1a1a1a; filter: blur(3px); border-radius: 2px; }
     .blur-spos { position: absolute; bottom: 8%; left: 35%; width: 30%; height: 5%; background: #111; filter: blur(3px); border-radius: 2px; }
-    .product-name { font-size: 1.25rem; font-weight: 800; color: #1e3a8a; margin-top: 6px; }
+    .product-name { font-size: 1.3rem; font-weight: 800; color: #1e3a8a; margin-top: 6px; }
     .product-desc { font-size: 0.85rem; color: #6b7280; line-height: 1.4; }
     .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #1e40af; line-height: 1.6; }
     .subsection { background: #f8fafc; border: 1px solid #e8edf5; border-radius: 12px; padding: 24px; margin-top: 16px; }
     .radio-group { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
     .radio-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
     .radio-opt label { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: #f9fafb; }
+    .radio-opt input:focus-visible + label { outline: 3px solid #2563eb; outline-offset: 2px; }
     .radio-opt input:checked + label { border-color: #2563eb; background: #eff6ff; color: #1e3a8a; }
     .warning-box { background: #fffbeb; border: 1.5px solid #fcd34d; border-left: 5px solid #f59e0b; border-radius: 12px; padding: 22px 24px; margin-top: 16px; }
     .app-warning { background: #fff7ed; border: 1.5px solid #fdba74; border-left: 5px solid #f97316; border-radius: 12px; padding: 20px 24px; margin-top: 16px; }
@@ -63,6 +145,19 @@
     .btn-secondary:hover:not(:disabled) { background: #475569; }
     .btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
     .hidden { display: none !important; }
+
+    /* Responsividade para telas de celulares */
+    @media (max-width: 580px) {
+      body { padding: 14px 10px 32px; }
+      .header { padding: 24px 18px 20px; }
+      .header h1 { font-size: 1.35rem; }
+      .form-card { padding: 20px 16px; }
+      .field-group.cols { grid-template-columns: 1fr; gap: 14px; }
+      .product-grid { grid-template-columns: 1fr; gap: 18px; }
+      .product-option:has(input:checked) { transform: scale(1.02); }
+      .product-grid:has(input:checked) .product-option:not(:has(input:checked)) { transform: scale(0.98); }
+      .btn-group { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -79,6 +174,7 @@
           <div class="product-option">
             <input type="radio" id="opt-tef" name="produto" value="TEF" required />
             <label for="opt-tef">
+              <span class="badge-selected">✓ SELECIONADO</span>
               <div class="product-img-box">
                 <img src="TEF.jpg" alt="Equipamento TEF" />
                 <div class="blur-tef"></div>
@@ -90,6 +186,7 @@
           <div class="product-option">
             <input type="radio" id="opt-smartpos" name="produto" value="SMARTPOS" required />
             <label for="opt-smartpos">
+              <span class="badge-selected">✓ SELECIONADO</span>
               <div class="product-img-box">
                 <img src="SMARTPOS.jpg" alt="Equipamento SMARTPOS" />
                 <div class="blur-spos"></div>
@@ -114,7 +211,7 @@
           <div class="section-title"><div class="step-badge">3</div>Dados da Loja</div>
           <div class="field-group">
             <div class="field-group cols">
-              <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="tef-cnpj" id="tef-cnpj" class="req-field" maxlength="18" disabled /><span id="tef-loading" class="loading-indicator hidden">Buscando...</span></div>
+              <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="tef-cnpj" id="tef-cnpj" class="req-field" maxlength="18" disabled /><span id="tef-loading" class="loading-indicator hidden">Buscando...</span><span id="tef-cnpj-msg" style="font-size:0.75rem; color:#b45309; margin-top:2px;" class="hidden"></span></div>
               <div class="field"><label>UF <span class="req">*</span></label>
                 <select name="tef-uf" id="tef-uf" class="req-field" disabled>
                   <option value="">UF</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
@@ -172,7 +269,7 @@
         <div class="section">
           <div class="section-title"><div class="step-badge">2</div>Dados da Empresa</div>
           <div class="field-group">
-            <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="spos-cnpj" id="spos-cnpj" class="req-field" maxlength="18" disabled /><span id="spos-loading" class="loading-indicator hidden">Buscando...</span></div>
+            <div class="field"><label>CNPJ <span class="req">*</span></label><input type="text" name="spos-cnpj" id="spos-cnpj" class="req-field" maxlength="18" disabled /><span id="spos-loading" class="loading-indicator hidden">Buscando...</span><span id="spos-cnpj-msg" style="font-size:0.75rem; color:#b45309; margin-top:2px;" class="hidden"></span></div>
             <div class="field"><label>Razão Social <span class="req">*</span></label><input type="text" name="spos-razao" id="spos-razao" class="req-field" disabled /></div>
             <div class="field"><label>Nome Fantasia</label><input type="text" name="spos-fantasia" id="spos-fantasia" disabled /></div>
           </div>
@@ -263,7 +360,10 @@
   async function buscarCNPJ(cnpj, prefixo) {
     const limpo = cnpj.replace(/\D/g, '');
     if (limpo.length !== 14) return;
-    const ind = $(prefixo + '-loading'); if (ind) show(ind);
+    const ind = $(prefixo + '-loading');
+    const msg = $(prefixo + '-cnpj-msg');
+    if (ind) show(ind);
+    if (msg) hide(msg);
     try {
       const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${limpo}`);
       if (!res.ok) throw new Error();
@@ -271,14 +371,21 @@
       if ($(prefixo + '-razao')) $(prefixo + '-razao').value = data.razao_social || '';
       if ($(prefixo + '-fantasia')) $(prefixo + '-fantasia').value = data.nome_fantasia || '';
       if (prefixo === 'tef') {
-        const rua = data.logradouro ? `${data.descricao_tipo_de_logradouro} ${data.logradouro}` : '';
+        const rua = data.logradouro ? `${data.descricao_tipo_de_logradouro || ''} ${data.logradouro}`.trim() : '';
         const num = data.numero ? `, ${data.numero}` : '';
         $('tef-end').value = `${rua}${num}`.trim();
         $('tef-bairro').value = data.bairro || '';
         $('tef-cidade').value = data.municipio || '';
         $('tef-uf').value = data.uf || '';
       }
-    } catch (e) {} finally { if (ind) hide(ind); }
+    } catch (e) {
+      if (msg) {
+        msg.innerText = '⚠️ Não foi possível preencher automaticamente. Digite os dados abaixo.';
+        show(msg);
+      }
+    } finally {
+      if (ind) hide(ind);
+    }
   }
   ['tef-cnpj','spos-cnpj'].forEach(id => {
     if ($(id)) {
