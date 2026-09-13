@@ -723,17 +723,18 @@
     if (e.target === $('confirmModal')) fecharModal();
   });
 
-  $('btn-enviar-solicitacao').addEventListener('click', () => {
+    $('btn-enviar-solicitacao').addEventListener('click', () => {
     if (!$('mainForm').reportValidity()) return;
-    const prod = document.querySelector('input[name="produto"]:checked').value;
+    const prodRaw = document.querySelector('input[name="produto"]:checked').value;
+    const prodFriendly = prodRaw === 'TEF' ? 'PinPad / TEF' : 'SMARTPOS / TEF';
     const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,'');
     const randomHex = Math.random().toString(16).slice(2, 6).toUpperCase();
-    currentProtocol = `${prod}-${dateStr}-${randomHex}`;
-    emailData = { prod, protocol: currentProtocol };
+    currentProtocol = `${prodRaw}-${dateStr}-${randomHex}`;
+    emailData = { prod: prodFriendly, protocol: currentProtocol };
 
     let summaryHtml = '';
 
-    if (prod === 'TEF') {
+    if (prodRaw === 'TEF') {
       const count = parseInt(getVal('tef-qtd'), 10) || 1;
       const adq = getVal('tef-adq');
       const cnpj = getVal('tef-cnpj');
@@ -754,14 +755,15 @@
       emailData.fantasia = getVal('tef-fantasia');
       emailData.razao = getVal('tef-razao');
       emailData.userEmail = email;
-      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: TEF\nQTD: ${count}\nADQUIRENTE: ${adq}${txtTerminais}\nCNPJ: ${cnpj}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${email} | ${tel}`;
+      emailData.cnpj = cnpj;
+      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: ${prodFriendly}\nQTD: ${count}\nADQUIRENTE: ${adq}${txtTerminais}\nCNPJ: ${cnpj}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${email} | ${tel}`;
       if (mesmo === 'SIM') emailData.txt += `\nRESP. PORTAL: MESMO DA LOJA`;
       else emailData.txt += `\nRESP. PORTAL: ${getVal('portal-nome')} | ${getVal('portal-email')} | ${getVal('portal-tel')}`;
 
       summaryHtml = `
         <div class="modal-summary-row">
           <span class="modal-summary-label">Equipamento:</span>
-          <span class="modal-summary-value">🖥️ TEF (${count} ${count > 1 ? 'máquinas' : 'máquina'})</span>
+          <span class="modal-summary-value">🖥️ ${prodFriendly} (${count} ${count > 1 ? 'máquinas' : 'máquina'})</span>
         </div>
         <div class="modal-summary-row">
           <span class="modal-summary-label">Adquirente:</span>
@@ -788,12 +790,13 @@
       emailData.fantasia = getVal('spos-fantasia');
       emailData.razao = getVal('spos-razao');
       emailData.userEmail = email;
-      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: SMARTPOS\nCNPJ: ${cnpj}\nRAZAO: ${getVal('spos-razao')}\nFANTASIA: ${getVal('spos-fantasia')}\nSERIE: ${serie}\nMODELO: ${mod}\nAPP_INSTALADO: ${app}\nRESPONSAVEL: ${getVal('spos-nome')}\nEMAIL: ${email}\nTELEFONE: ${tel}`;
+      emailData.cnpj = cnpj;
+      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: ${prodFriendly}\nCNPJ: ${cnpj}\nRAZAO: ${getVal('spos-razao')}\nFANTASIA: ${getVal('spos-fantasia')}\nSERIE: ${serie}\nMODELO: ${mod}\nAPP_INSTALADO: ${app}\nRESPONSAVEL: ${getVal('spos-nome')}\nEMAIL: ${email}\nTELEFONE: ${tel}`;
 
       summaryHtml = `
         <div class="modal-summary-row">
           <span class="modal-summary-label">Equipamento:</span>
-          <span class="modal-summary-value">📱 SMARTPOS</span>
+          <span class="modal-summary-value">📱 ${prodFriendly}</span>
         </div>
         <div class="modal-summary-row">
           <span class="modal-summary-label">Empresa / CNPJ:</span>
@@ -822,7 +825,7 @@
     btnCancel.disabled = true;
 
     const nome_empresa = emailData.fantasia || emailData.razao;
-    const _subject = `Nova Solicitação ${nome_empresa} (Equipamento ${emailData.prod}) #${currentProtocol}`;
+    const _subject = `Nova Solicitação ${nome_empresa} (${emailData.prod}) #${currentProtocol}`;
     const payload = {
       _subject: _subject,
       _template: 'box',
@@ -832,7 +835,7 @@
 
     if (emailData.userEmail) {
       payload.email = emailData.userEmail;
-      payload._autoresponse = `Olá!\n\nFoi recebida com sucesso a solicitação de instalação do equipamento ${emailData.prod}.\n\nO número do seu protocolo é: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados enviados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.\n\nAtenciosamente,\nEquipe de Atendimento`;
+      payload._autoresponse = `Olá!\n\nFoi recebida com sucesso a solicitação de instalação do seu equipamento ${emailData.prod}.\n\nO número do seu protocolo é: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados enviados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.\n\nAtenciosamente,\nEquipe de Atendimento - Infobrasil Sistemas`;
     }
 
     // 🛡️ Solicita o token invisível do Google reCAPTCHA
