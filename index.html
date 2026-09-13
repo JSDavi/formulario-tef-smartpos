@@ -227,18 +227,27 @@
     }
     .modal-summary-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 12px;
+    }
+    .modal-summary-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
     .modal-summary-label {
       color: #64748b;
-      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
     .modal-summary-value {
       color: #0f172a;
       font-weight: 700;
-      text-align: right;
+      font-size: 1.05rem;
+      text-align: left;
     }
     .modal-actions {
       display: flex;
@@ -424,10 +433,10 @@
 
   <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #cbd5e1; color: #475569; font-size: 0.9rem; line-height: 1.6;">
     <div style="margin-bottom: 16px; font-weight: 800; color: #016855;">DÚVIDAS OU PRECISA DE AJUDA?</div>
-    <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; line-height: 1;">
-      <a href="https://wa.me/5585998260203" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: inline-block; white-space: nowrap;"><span style="vertical-align: middle; font-size: 1.1rem;">📱</span> <span style="vertical-align: middle;">Comercial: (85) 99826-0203</span></a>
-      <a href="https://wa.me/558532460368" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: inline-block; white-space: nowrap;"><span style="vertical-align: middle; font-size: 1.1rem;">📞</span> <span style="vertical-align: middle;">Suporte: (85) 3246-0368</span></a>
-      <a href="mailto:suporte@infobrasilsistemas.com.br" style="color: #016855; text-decoration: none; font-weight: 700; display: inline-block; white-space: nowrap;"><span style="vertical-align: middle; font-size: 1.1rem;">✉️</span> <span style="vertical-align: middle;">suporte@infobrasilsistemas.com.br</span></a>
+    <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+      <a href="https://wa.me/5585998260203" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">📱</span> Comercial: (85) 99826-0203</a>
+      <a href="https://wa.me/558532460368" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">📞</span> Suporte: (85) 3246-0368</a>
+      <a href="mailto:suporte@infobrasilsistemas.com.br" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">✉️</span> suporte@infobrasilsistemas.com.br</a>
     </div>
     <div style="font-size: 0.78rem; color: #64748b; font-weight: 600;">
       🔒 Ambiente Seguro e Criptografado<br>Infobrasil Sistemas &copy; 2024
@@ -874,7 +883,9 @@
               cnpj:       emailData.cnpj || '',
               mensagem:   `Sua solicitação de instalação do equipamento ${emailData.prod} foi recebida com sucesso.\n\nProtocolo: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.`,
               'g-recaptcha-response': token // Repassa o token para validação no servidor do EmailJS
-            }).catch(() => {/* silencioso */});
+            }).catch(err => { 
+              alert("Aviso de Sistema (EmailJS):\nO envio de recibo para o cliente foi bloqueado. Erro: " + JSON.stringify(err));
+            });
           }
         })
         .catch(e => {
