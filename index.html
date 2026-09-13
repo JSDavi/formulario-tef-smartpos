@@ -4,19 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Formulário de Aquisição — TEF / SMARTPOS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>emailjs.init({ publicKey: 'xHY2meEVPdS0SIlnb' });</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; padding: 28px 16px 48px; }
+    body { font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; padding: 28px 16px 48px; }
     .container { max-width: 720px; margin: 0 auto; }
-    .header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #fff; padding: 36px 40px 32px; border-radius: 16px 16px 0 0; text-align: center; }
+    .header { background: linear-gradient(135deg, #3D9BE9 0%, #2B689C 100%); color: #fff; padding: 36px 40px 32px; border-radius: 16px 16px 0 0; text-align: center; }
+    .header img.logo { max-width: 220px; margin-bottom: 16px; }
     .header h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; }
     .header p  { font-size: 0.93rem; opacity: 0.85; line-height: 1.5; }
     .form-card { background: #fff; border-radius: 0 0 16px 16px; padding: 40px; box-shadow: 0 6px 32px rgba(0,0,0,0.08); }
     .success-card { background: #fff; border-radius: 16px; padding: 60px 40px; text-align: center; box-shadow: 0 6px 32px rgba(0,0,0,0.08); }
     .success-icon { font-size: 4rem; margin-bottom: 20px; }
-    .success-title { font-size: 1.5rem; font-weight: 800; color: #15803d; margin-bottom: 12px; }
+    .success-title { font-size: 1.5rem; font-weight: 800; color: #015738; margin-bottom: 12px; }
     .success-text { font-size: 1rem; color: #4b5563; line-height: 1.6; }
     #reviewContainer { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
     #reviewContainer h3 { color: #1e3a8a; margin-bottom: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
@@ -25,17 +29,17 @@
     .review-item span { color: #1a202c; font-weight: 600; }
     .review-divider { margin: 16px 0; border-top: 1px dashed #cbd5e1; }
     .section { margin-bottom: 36px; }
-    .section-title { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 700; color: #1e3a8a; padding-bottom: 14px; border-bottom: 2px solid #e8edf5; margin-bottom: 22px; }
-    .step-badge { width: 28px; height: 28px; background: #1e3a8a; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; flex-shrink: 0; }
+    .section-title { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 700; color: #2B689C; padding-bottom: 14px; border-bottom: 2px solid #e8edf5; margin-bottom: 22px; }
+    .step-badge { width: 28px; height: 28px; background: #2B689C; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; flex-shrink: 0; }
     .field-group { display: grid; gap: 16px; }
     .field-group.cols { grid-template-columns: 1fr 1fr; }
     .field { display: flex; flex-direction: column; gap: 6px; position: relative; }
     .field label { font-size: 0.78rem; font-weight: 700; color: #4b5563; text-transform: uppercase; }
     .field label .req { color: #dc2626; margin-left: 2px; }
-    .field input, .field select { padding: 11px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; background: #f9fafb; transition: all 0.2s; }
-    .field input:focus, .field select:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+    .field input, .field select { padding: 11px 14px; border: 1.5px solid #d1d5db; border-radius: 20px; font-size: 0.95rem; background: #f9fafb; transition: all 0.2s; }
+    .field input:focus, .field select:focus { outline: none; border-color: #3D9BE9; background: #fff; box-shadow: 0 0 0 3px rgba(61,155,233,0.12); }
     .field input:disabled, .field select:disabled { opacity: 0.7; background: #e5e7eb; cursor: not-allowed; }
-    .loading-indicator { position: absolute; right: 12px; top: 36px; font-size: 0.8rem; color: #2563eb; font-weight: bold; }
+    .loading-indicator { position: absolute; right: 12px; top: 36px; font-size: 0.8rem; color: #3D9BE9; font-weight: bold; }
     .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; align-items: stretch; }
     .product-option { position: relative; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
     .product-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -48,7 +52,7 @@
       gap: 12px;
       padding: 24px 16px;
       border: 2px solid #e5e7eb;
-      border-radius: 14px;
+      border-radius: 20px;
       cursor: pointer;
       text-align: center;
       background: #f9fafb;
@@ -59,7 +63,7 @@
     
     /* Acessibilidade pelo Teclado (TAB) */
     .product-option input:focus-visible + label {
-      outline: 3px solid #2563eb;
+      outline: 3px solid #3D9BE9;
       outline-offset: 3px;
     }
 
@@ -74,12 +78,12 @@
       transform: scale(1.05);
     }
     .product-option input:checked + label {
-      border-color: #2563eb;
+      border-color: #3D9BE9;
       background: #f0f7ff;
-      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22), 0 0 0 3px rgba(37, 99, 235, 0.18);
+      box-shadow: 0 12px 28px rgba(61, 155, 233, 0.22), 0 0 0 3px rgba(61, 155, 233, 0.18);
     }
     .product-option input:checked + label .product-name {
-      color: #1d4ed8;
+      color: #2B689C;
     }
 
     /* Badge de confirmação no card selecionado */
@@ -88,14 +92,14 @@
       position: absolute;
       top: -10px;
       right: 14px;
-      background: #2563eb;
+      background: #015738;
       color: #fff;
       font-size: 0.72rem;
       font-weight: 800;
       padding: 3px 10px;
       border-radius: 12px;
       letter-spacing: 0.4px;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 2px 6px rgba(1, 87, 56, 0.3);
     }
     .product-option input:checked + label .badge-selected {
       display: inline-block;
@@ -127,22 +131,22 @@
 
     .blur-tef { position: absolute; top: 26%; left: 35%; width: 30%; height: 6%; background: #1a1a1a; filter: blur(3px); border-radius: 2px; }
     .blur-spos { position: absolute; bottom: 8%; left: 35%; width: 30%; height: 5%; background: #111; filter: blur(3px); border-radius: 2px; }
-    .product-name { font-size: 1.3rem; font-weight: 800; color: #1e3a8a; margin-top: 6px; }
+    .product-name { font-size: 1.3rem; font-weight: 800; color: #2B689C; margin-top: 6px; }
     .product-desc { font-size: 0.85rem; color: #6b7280; line-height: 1.4; }
-    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #2563eb; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #1e40af; line-height: 1.6; }
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #3D9BE9; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #2B689C; line-height: 1.6; }
     .subsection { background: #f8fafc; border: 1px solid #e8edf5; border-radius: 12px; padding: 24px; margin-top: 16px; }
     .radio-group { display: flex; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
     .radio-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-    .radio-opt label { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: #f9fafb; }
-    .radio-opt input:focus-visible + label { outline: 3px solid #2563eb; outline-offset: 2px; }
-    .radio-opt input:checked + label { border-color: #2563eb; background: #eff6ff; color: #1e3a8a; }
+    .radio-opt label { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border: 2px solid #e5e7eb; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: #f9fafb; }
+    .radio-opt input:focus-visible + label { outline: 3px solid #3D9BE9; outline-offset: 2px; }
+    .radio-opt input:checked + label { border-color: #3D9BE9; background: #eff6ff; color: #2B689C; }
     .warning-box { background: #fffbeb; border: 1.5px solid #fcd34d; border-left: 5px solid #f59e0b; border-radius: 12px; padding: 22px 24px; margin-top: 16px; }
     .app-warning { background: #fff7ed; border: 1.5px solid #fdba74; border-left: 5px solid #f97316; border-radius: 12px; padding: 20px 24px; margin-top: 16px; }
     hr { border: none; border-top: 1px solid #e5e7eb; margin: 30px 0; }
     .btn-group { display: flex; gap: 12px; margin-top: 24px; }
-    .btn { flex: 1; padding: 16px; color: #fff; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
-    .btn-primary { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
-    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.38); }
+    .btn { flex: 1; padding: 16px; color: #fff; border: none; border-radius: 20px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .btn-primary { background: linear-gradient(135deg, #3D9BE9, #2B689C); }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(61,155,233,0.38); }
     .btn-secondary { background: #64748b; }
     .btn-secondary:hover:not(:disabled) { background: #475569; }
     .btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -188,7 +192,7 @@
       align-items: center;
       gap: 6px;
       background: #eff6ff;
-      color: #1d4ed8;
+      color: #2B689C;
       font-size: 0.8rem;
       font-weight: 700;
       padding: 6px 12px;
@@ -198,7 +202,7 @@
     .modal-title {
       font-size: 1.35rem;
       font-weight: 800;
-      color: #1e3a8a;
+      color: #3D9BE9;
       margin-bottom: 8px;
     }
     .modal-subtitle {
@@ -264,7 +268,8 @@
 <body>
 <div class="container">
   <div class="header" id="mainHeader">
-    <h1>📋 Formulário de Aquisição</h1>
+    <img src="https://static.wixstatic.com/media/97349f_a4abdfe6f4384c2884ae2228ad3528b9~mv2.png" alt="Infobrasil Sistemas" class="logo" />
+    <h1>Formulário de Aquisição</h1>
     <p>Preencha os dados abaixo para solicitar a instalação do seu equipamento de pagamento</p>
   </div>
   <div class="form-card" id="formContainer">
