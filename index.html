@@ -436,12 +436,34 @@
     </form>
   </div>
 
+  <div class="success-card hidden" id="successCard">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Solicitação Enviada!</div>
+    <div class="success-text">
+      O número do seu protocolo é: <strong id="protocolo-view" style="color:#016855;"></strong><br/><br/>
+      Nossa equipe fará a conferência e entrará em contato em breve para finalizar a instalação.
+    </div>
+    <div style="margin-top: 28px; padding: 18px; background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 12px; font-size: 0.88rem; color: #b45309; text-align: left; line-height: 1.5;">
+      <strong style="display: block; margin-bottom: 6px;">⚠️ Preencheu algum dado errado?</strong>
+      Como seu protocolo já foi gerado, <a href="#" onclick="window.location.reload(); return false;" style="color: #b45309; text-decoration: underline; font-weight: 800;">clique aqui para preencher novamente</a> e pode ignorar o e-mail anterior.
+    </div>
+  </div>
+
   <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #cbd5e1; color: #475569; font-size: 0.9rem; line-height: 1.6;">
     <div style="margin-bottom: 16px; font-weight: 800; color: #016855;">DÚVIDAS OU PRECISA DE AJUDA?</div>
     <div class="footer-links">
-      <a href="https://wa.me/5585998260203" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">📱</span> Comercial: (85) 99826-0203</a>
-      <a href="https://wa.me/558532460368" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">📞</span> Suporte: (85) 3246-0368</a>
-      <a href="mailto:suporte@infobrasilsistemas.com.br" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">✉️</span> suporte@infobrasilsistemas.com.br</a>
+      <a href="https://wa.me/5585998260203" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+        Comercial: (85) 99826-0203
+      </a>
+      <a href="https://wa.me/558532460368" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        Suporte: (85) 3246-0368
+      </a>
+      <a href="mailto:suporte@infobrasilsistemas.com.br" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        suporte@infobrasilsistemas.com.br
+      </a>
     </div>
     <div style="font-size: 0.78rem; color: #64748b; font-weight: 600;">
       🔒 Ambiente Seguro e Criptografado<br>Infobrasil Sistemas &copy; 2024
@@ -465,18 +487,6 @@
         <button type="button" class="btn btn-secondary" id="btn-modal-cancelar" style="flex:1;">✏️ Revisar Formulário</button>
         <button type="button" class="btn btn-primary" id="btn-modal-confirmar" style="flex:1.2; background: #016855;">🔒 Confirmar Aquisição</button>
       </div>
-    </div>
-  </div>
-  <div class="success-card hidden" id="successCard">
-    <div class="success-icon">✅</div>
-    <div class="success-title">Solicitação Enviada!</div>
-    <div class="success-text">
-      O número do seu protocolo é: <strong id="protocolo-view" style="color:#016855;"></strong><br/><br/>
-      Nossa equipe fará a conferência e entrará em contato em breve para finalizar a instalação.
-    </div>
-    <div style="margin-top: 28px; padding: 18px; background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 12px; font-size: 0.88rem; color: #b45309; text-align: left; line-height: 1.5;">
-      <strong style="display: block; margin-bottom: 6px;">⚠️ Preencheu algum dado errado?</strong>
-      Como seu protocolo já foi gerado, <a href="#" onclick="window.location.reload(); return false;" style="color: #b45309; text-decoration: underline; font-weight: 800;">clique aqui para preencher novamente</a> e pode ignorar o e-mail anterior.
     </div>
   </div>
 </div>
