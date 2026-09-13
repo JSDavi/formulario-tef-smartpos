@@ -7,8 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>emailjs.init({ publicKey: 'xHY2meEVPdS0SIlnb' });</script>
   <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
   <!-- Google reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI"></script>
@@ -16,6 +14,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; padding: 28px 16px 48px; }
     .container { max-width: 720px; margin: 0 auto; }
+    
+    /* Regras de UX e Responsividade (Mobile) */
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
+    @media (max-width: 480px) {
+      .footer-links { flex-direction: column; align-items: center; gap: 16px; }
+      .footer-links a { width: 100%; justify-content: center; }
+    }
     .header { background: linear-gradient(135deg, #02856e 0%, #016855 100%); color: #fff; padding: 36px 40px 32px; border-radius: 16px 16px 0 0; text-align: center; }
     .header img.logo { max-width: 220px; margin-bottom: 16px; }
     .header h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; }
@@ -433,7 +438,7 @@
 
   <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #cbd5e1; color: #475569; font-size: 0.9rem; line-height: 1.6;">
     <div style="margin-bottom: 16px; font-weight: 800; color: #016855;">DÚVIDAS OU PRECISA DE AJUDA?</div>
-    <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+    <div class="footer-links">
       <a href="https://wa.me/5585998260203" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">📱</span> Comercial: (85) 99826-0203</a>
       <a href="https://wa.me/558532460368" target="_blank" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">📞</span> Suporte: (85) 3246-0368</a>
       <a href="mailto:suporte@infobrasilsistemas.com.br" style="color: #016855; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1.25rem; line-height: 0; display: flex; align-items: center;">✉️</span> suporte@infobrasilsistemas.com.br</a>
@@ -842,11 +847,7 @@
       DADOS_COMPLETOS: emailData.txt
     };
 
-    if (emailData.userEmail) {
-      payload.email = emailData.userEmail;
-      payload._autoresponse = `Olá!\n\nFoi recebida com sucesso a solicitação de instalação do seu equipamento ${emailData.prod}.\n\nO número do seu protocolo é: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados enviados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.\n\nAtenciosamente,\nEquipe de Atendimento - Infobrasil Sistemas`;
-    }
-
+    // Envia apenas o payload bruto para o FormSubmit (empresa)
     // 🛡️ Solicita o token invisível do Google reCAPTCHA
     grecaptcha.ready(function() {
       grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
@@ -870,23 +871,6 @@
           hide($('mainHeader'));
           show($('successCard'));
           window.scrollTo({ top: 0, behavior: 'smooth' });
-
-          // Enviar e-mail de confirmação ao cliente via EmailJS
-          if (emailData.userEmail) {
-            const nomeEmpresa = emailData.fantasia || emailData.razao || 'Cliente';
-            emailjs.send('service_sbo16zt', 'template_2dm500v', {
-              to_name:    nomeEmpresa,
-              to_email:   emailData.userEmail,
-              protocolo:  currentProtocol,
-              equipamento: emailData.prod || '',
-              empresa:    emailData.razao || '',
-              cnpj:       emailData.cnpj || '',
-              mensagem:   `Sua solicitação de instalação do equipamento ${emailData.prod} foi recebida com sucesso.\n\nProtocolo: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.`,
-              'g-recaptcha-response': token // Repassa o token para validação no servidor do EmailJS
-            }).catch(err => { 
-              alert("Aviso de Sistema (EmailJS):\nO envio de recibo para o cliente foi bloqueado. Erro: " + JSON.stringify(err));
-            });
-          }
         })
         .catch(e => {
           alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
@@ -898,6 +882,29 @@
       });
     });
   });
+
+  // UX: NAVEGAÇÃO INTELIGENTE (Auto-Focus no Celular / Enter)
+  const allInputs = Array.from(document.querySelectorAll('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), select'));
+  allInputs.forEach((input, index) => {
+    // Avança para o próximo campo ao apertar "Enter" ou "Avançar" no teclado mobile
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        let next = index + 1;
+        while (next < allInputs.length && (allInputs[next].disabled || allInputs[next].offsetParent === null)) next++;
+        if (next < allInputs.length) allInputs[next].focus();
+      }
+    });
+    // Auto-avanço para campos com limite exato (CNPJ, Telefone) quando preenchidos
+    input.addEventListener('input', (e) => {
+      if (input.maxLength && input.maxLength > 0 && input.value.length >= input.maxLength) {
+        let next = index + 1;
+        while (next < allInputs.length && (allInputs[next].disabled || allInputs[next].offsetParent === null)) next++;
+        if (next < allInputs.length) allInputs[next].focus();
+      }
+    });
+  });
+
 </script>
 </body>
 </html>
