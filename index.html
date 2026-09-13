@@ -9,6 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>emailjs.init({ publicKey: 'xHY2meEVPdS0SIlnb' });</script>
+  <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+  <!-- Google reCAPTCHA v3 -->
+  <script src="https://www.google.com/recaptcha/api.js?render=6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; padding: 28px 16px 48px; }
@@ -791,45 +794,53 @@
       payload._autoresponse = `Olá!\n\nFoi recebida com sucesso a solicitação de instalação do equipamento ${emailData.prod}.\n\nO número do seu protocolo é: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados enviados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.\n\nAtenciosamente,\nEquipe de Atendimento`;
     }
 
-    fetch('https://formsubmit.co/ajax/davisilvace@gmail.com', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(r => {
-      if (!r.ok) throw new Error('Falha no status HTTP ' + r.status);
-      return r.json();
-    })
-    .then(data => {
-      fecharModal();
-      $('protocolo-view').innerText = currentProtocol;
-      hide($('formContainer'));
-      hide($('mainHeader'));
-      show($('successCard'));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 🛡️ Solicita o token invisível do Google reCAPTCHA
+    grecaptcha.ready(function() {
+      grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
+        
+        fetch('https://formsubmit.co/ajax/c294a83746ea06a6acd4f3410119ae2a', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(r => {
+          if (!r.ok) throw new Error('Falha no status HTTP ' + r.status);
+          return r.json();
+        })
+        .then(data => {
+          fecharModal();
+          $('protocolo-view').innerText = currentProtocol;
+          hide($('formContainer'));
+          hide($('mainHeader'));
+          show($('successCard'));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Enviar e-mail de confirmação ao cliente via EmailJS
-      if (emailData.userEmail) {
-        const nomeEmpresa = emailData.fantasia || emailData.razao || 'Cliente';
-        emailjs.send('service_sbo16zt', 'template_2dm500v', {
-          to_name:    nomeEmpresa,
-          to_email:   emailData.userEmail,
-          protocolo:  currentProtocol,
-          equipamento: emailData.prod || '',
-          empresa:    emailData.razao || '',
-          cnpj:       emailData.cnpj || '',
-          mensagem:   `Sua solicitação de instalação do equipamento ${emailData.prod} foi recebida com sucesso.\n\nProtocolo: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.`
-        }).catch(() => {/* silencioso — o envio principal já ocorreu */});
-      }
-    })
-    .catch(e => {
-      alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
-      btn.innerHTML = '✅ Sim, Enviar Agora';
-      btn.disabled = false;
-      btnCancel.disabled = false;
+          // Enviar e-mail de confirmação ao cliente via EmailJS
+          if (emailData.userEmail) {
+            const nomeEmpresa = emailData.fantasia || emailData.razao || 'Cliente';
+            emailjs.send('service_sbo16zt', 'template_2dm500v', {
+              to_name:    nomeEmpresa,
+              to_email:   emailData.userEmail,
+              protocolo:  currentProtocol,
+              equipamento: emailData.prod || '',
+              empresa:    emailData.razao || '',
+              cnpj:       emailData.cnpj || '',
+              mensagem:   `Sua solicitação de instalação do equipamento ${emailData.prod} foi recebida com sucesso.\n\nProtocolo: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.`,
+              'g-recaptcha-response': token // Repassa o token para validação no servidor do EmailJS
+            }).catch(() => {/* silencioso */});
+          }
+        })
+        .catch(e => {
+          alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
+          btn.innerHTML = '✅ Sim, Enviar Agora';
+          btn.disabled = false;
+          btnCancel.disabled = false;
+        });
+
+      });
     });
   });
 </script>
