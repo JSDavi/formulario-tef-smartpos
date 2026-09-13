@@ -457,8 +457,12 @@
     <div class="success-icon">✅</div>
     <div class="success-title">Solicitação Enviada!</div>
     <div class="success-text">
-      O número do seu protocolo é: <strong id="protocolo-view" style="color:#014d3f;"></strong><br/><br/>
+      O número do seu protocolo é: <strong id="protocolo-view" style="color:#016855;"></strong><br/><br/>
       Nossa equipe fará a conferência e entrará em contato em breve para finalizar a instalação.
+    </div>
+    <div style="margin-top: 28px; padding: 18px; background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 12px; font-size: 0.88rem; color: #b45309; text-align: left; line-height: 1.5;">
+      <strong style="display: block; margin-bottom: 6px;">⚠️ Preencheu algum dado errado?</strong>
+      Como seu protocolo já foi gerado, <a href="#" onclick="window.location.reload(); return false;" style="color: #b45309; text-decoration: underline; font-weight: 800;">clique aqui para preencher novamente</a> e pode ignorar o e-mail anterior.
     </div>
   </div>
 </div>
@@ -633,6 +637,31 @@
   document.querySelectorAll('input[name="produto"]').forEach(r => {
     r.addEventListener('change', function () {
       const isTEF = this.value === 'TEF';
+      
+      // ESPELHAMENTO DE DADOS (UX Improvement)
+      const copyVal = (srcId, destId) => {
+        const src = $(srcId); const dest = $(destId);
+        if (src && dest && src.value.trim() !== '' && dest.value.trim() === '') {
+          dest.value = src.value;
+        }
+      };
+      
+      if (isTEF) {
+        copyVal('spos-cnpj', 'tef-cnpj');
+        copyVal('spos-razao', 'tef-razao');
+        copyVal('spos-fantasia', 'tef-fantasia');
+        copyVal('spos-nome', 'loja-nome');
+        copyVal('spos-email', 'loja-email');
+        copyVal('spos-tel', 'loja-tel');
+      } else {
+        copyVal('tef-cnpj', 'spos-cnpj');
+        copyVal('tef-razao', 'spos-razao');
+        copyVal('tef-fantasia', 'spos-fantasia');
+        copyVal('loja-nome', 'spos-nome');
+        copyVal('loja-email', 'spos-email');
+        copyVal('loja-tel', 'spos-tel');
+      }
+
       $('section-tef').classList.toggle('hidden', !isTEF);
       $('section-smartpos').classList.toggle('hidden', isTEF);
       setSection('section-tef', isTEF);
