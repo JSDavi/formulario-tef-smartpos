@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Formulário de Aquisição — TEF / SMARTPOS</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init({ publicKey: 'xHY2meEVPdS0SIlnb' });</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; padding: 28px 16px 48px; }
@@ -803,6 +805,20 @@
       hide($('mainHeader'));
       show($('successCard'));
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Enviar e-mail de confirmação ao cliente via EmailJS
+      if (emailData.userEmail) {
+        const nomeEmpresa = emailData.fantasia || emailData.razao || 'Cliente';
+        emailjs.send('service_sbo16zt', 'template_2dm500v', {
+          to_name:    nomeEmpresa,
+          to_email:   emailData.userEmail,
+          protocolo:  currentProtocol,
+          equipamento: emailData.prod || '',
+          empresa:    emailData.razao || '',
+          cnpj:       emailData.cnpj || '',
+          mensagem:   `Sua solicitação de instalação do equipamento ${emailData.prod} foi recebida com sucesso.\n\nProtocolo: ${currentProtocol}\n\nNossa equipe fará a conferência dos dados e entrará em contato em breve para os próximos passos.\n\nEste é um e-mail automático, por favor não responda.`
+        }).catch(() => {/* silencioso — o envio principal já ocorreu */});
+      }
     })
     .catch(e => {
       alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
