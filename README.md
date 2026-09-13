@@ -1,41 +1,27 @@
-# Formul·rio de AquisiÁ„o TEF / SMARTPOS
+# Formul√°rio de Aquisi√ß√£o TEF / SMARTPOS - Infobrasil Sistemas
 
-## Como publicar no Netlify (gratuito)
+Este √© o formul√°rio de aquisi√ß√£o front-end oficial, projetado com uma interface limpa, acess√≠vel e responsiva.
 
-### Passo 1 ó Criar conta
-Acesse https://netlify.com e crie uma conta gratuita (pode usar o Google ou GitHub).
+## üöÄ Arquitetura e Tecnologias
 
-### Passo 2 ó Fazer o deploy
-1. No painel do Netlify, clique em **"Add new site"**
-2. Escolha **"Deploy manually"**
-3. Arraste a pasta `FORMULARIOS` inteira para a ·rea indicada
-4. Aguarde alguns segundos ó o Netlify gera o link automaticamente
+Este projeto √© 100% est√°tico (Serverless) e utiliza servi√ßos de terceiros para garantir seguran√ßa e entrega:
 
-### Passo 3 ó Personalizar o link (opcional)
-1. V· em **Site configuration > Change site name**
-2. Digite um nome amig·vel, ex: `formulario-tef-smartpos`
-3. Seu link ficar·: `https://formulario-tef-smartpos.netlify.app`
+* **Hospedagem:** GitHub Pages (Sem limites de build, sempre online)
+* **Design:** HTML5, CSS3, e Vanilla JavaScript (Identidade visual da Infobrasil Sistemas)
+* **Envio Principal de Dados:** FormSubmit (E-mail ofuscado por string de seguran√ßa)
+* **Auto-Resposta ao Cliente:** EmailJS (Template em portugu√™s)
+* **Seguran√ßa Anti-Bot:** Google reCAPTCHA v3 (Totalmente invis√≠vel, validado via EmailJS) + Trava de clique duplo no JS.
 
-### Passo 4 ó Ver as respostas
-1. No painel do Netlify, v· em **Forms**
-2. Clique no formul·rio `aquisicao-tef-smartpos`
-3. Todas as respostas ficam salvas ali, com data e hora
+## üîê Seguran√ßa Implementada (Zero Trust)
 
----
+Seguindo as regras estritas do projeto:
+1. **Nenhum e-mail exposto no c√≥digo-fonte.**
+2. **Defesa DDoS / Spam:** O bot√£o sofre disable (loading state) instantaneamente ao ser clicado. A requisi√ß√£o s√≥ √© liberada se passar no desafio invis√≠vel do Google reCAPTCHA v3.
+3. **Bloqueio de Dom√≠nio ativado.**
 
-## Estrutura do formul·rio
+## üåç Como Publicar (GitHub Pages)
 
-```
-index.html       ? Arquivo principal do formul·rio
-README.md        ? Este arquivo
-```
-
-## Funcionalidades
-
-- SeleÁ„o condicional: TEF ou SMARTPOS
-- Campos especÌficos exibidos conforme o produto escolhido
-- M·scara autom·tica de CNPJ e telefone
-- Aviso amarelo quando o respons·vel pela loja È o mesmo do site do TEF
-- Aviso laranja com instruÁıes de instalaÁ„o do AppSuperTEF
-- IntegraÁ„o autom·tica com Netlify Forms (sem backend necess·rio)
-- Responsivo para celular e computador
+O deploy √© feito automaticamente pelo GitHub, de forma gratuita:
+1. V√° na aba **Settings** do reposit√≥rio no GitHub.
+2. Acesse **Pages** no menu esquerdo.
+3. Em "Branch", selecione `main` e clique em **Save**.
