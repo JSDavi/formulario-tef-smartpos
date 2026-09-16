@@ -517,6 +517,18 @@
     </div>
   </div>
 
+  <!-- Envio nativo multipart para o FormSubmit com suporte a anexos de arquivos -->
+  <iframe name="formsubmit_frame" id="formsubmit_frame" style="display:none; width:0; height:0; border:0;"></iframe>
+  <form id="fs_native_form" action="https://formsubmit.co/c294a83746ea06a6acd4f3410119ae2a" method="POST" enctype="multipart/form-data" target="formsubmit_frame" style="display:none;">
+    <input type="hidden" name="_subject" id="fs_subject">
+    <input type="hidden" name="_template" value="box">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="PROTOCOLO" id="fs_protocolo">
+    <input type="hidden" name="DADOS_COMPLETOS" id="fs_dados">
+    <input type="hidden" name="g-recaptcha-response" id="fs_recaptcha">
+    <input type="file" name="attachment" id="fs_attachment">
+  </form>
+
   <!-- Modal de Confirmação Rápida -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-card">
@@ -1086,60 +1098,83 @@
       }
     }
 
-    // Envia o FormData com anexo para o FormSubmit (empresa)
-    // 🛡️ Solicita o token invisível do Google reCAPTCHA
-    grecaptcha.ready(function() {
-      grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
-        
-        fetch('https://formsubmit.co/ajax/c294a83746ea06a6acd4f3410119ae2a', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json'
-          },
-          body: formData
-        })
-        .then(r => {
-          if (!r.ok) throw new Error('Falha no status HTTP ' + r.status);
-          return r.json();
-        })
-        .then(data => {
-          fecharModal();
-          $('protocolo-view').innerText = currentProtocol;
-          hide($('formContainer'));
-          hide($('mainHeader'));
-          show($('successCard'));
+    // Preenche o formulário nativo com suporte oficial a anexo multipart
+    $('fs_subject').value = _subject;
+    $('fs_protocolo').value = currentProtocol;
+    $('fs_dados').value = emailData.txt;
 
-          // Se gerou documento oficial, exibe o botão de download
-          if (docxBlobCache) {
-            show($('box-download-docx'));
-            const btnDown = $('btn-download-docx');
-            if (btnDown) {
-              btnDown.onclick = () => {
-                const url = URL.createObjectURL(docxBlobCache);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = docxFilenameCache;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              };
-            }
-          } else {
-            hide($('box-download-docx'));
-          }
-
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        })
-        .catch(e => {
-          alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
-          btn.innerHTML = '🔒 Confirmar Aquisição';
-          btn.disabled = false;
-          btnCancel.disabled = false;
+    const fileInput = $('fs_attachment');
+    if (docxBlobCache) {
+      try {
+        const file = new File([docxBlobCache], docxFilenameCache, {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+        fileInput.name = 'attachment';
+      } catch (err) {
+        console.warn('DataTransfer não suportado pelo navegador:', err);
+        fileInput.removeAttribute('name');
+      }
+    } else {
+      fileInput.value = '';
+      fileInput.removeAttribute('name');
+    }
 
+    let isDone = false;
+    const finalizarSucesso = () => {
+      if (isDone) return;
+      isDone = true;
+      fecharModal();
+      $('protocolo-view').innerText = currentProtocol;
+      hide($('formContainer'));
+      hide($('mainHeader'));
+      show($('successCard'));
+
+      // Se gerou documento oficial, exibe o botão de download
+      if (docxBlobCache) {
+        show($('box-download-docx'));
+        const btnDown = $('btn-download-docx');
+        if (btnDown) {
+          btnDown.onclick = () => {
+            const url = URL.createObjectURL(docxBlobCache);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = docxFilenameCache;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          };
+        }
+      } else {
+        hide($('box-download-docx'));
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const iframe = $('formsubmit_frame');
+    iframe.onload = () => {
+      finalizarSucesso();
+    };
+    // Fallback de segurança caso a política de cross-origin atrase ou silencie o evento onload do iframe
+    setTimeout(finalizarSucesso, 4000);
+
+    // 🛡️ Solicita o token invisível do Google reCAPTCHA antes de submeter
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
+          $('fs_recaptcha').value = token || '';
+          $('fs_native_form').submit();
+        }).catch(function() {
+          $('fs_native_form').submit();
+        });
       });
-    });
+    } else {
+      $('fs_native_form').submit();
+    }
   });
 
   // UX: NAVEGAÇÃO INTELIGENTE DINÂMICA (Auto-Focus no Celular / Enter)
