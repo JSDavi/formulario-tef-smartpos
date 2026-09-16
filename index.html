@@ -525,7 +525,6 @@
     <input type="hidden" name="_captcha" value="false">
     <input type="hidden" name="PROTOCOLO" id="fs_protocolo">
     <input type="hidden" name="DADOS_COMPLETOS" id="fs_dados">
-    <input type="hidden" name="g-recaptcha-response" id="fs_recaptcha">
     <input type="file" name="attachment" id="fs_attachment">
   </form>
 
@@ -901,12 +900,18 @@
       '{{TEL_RESP_PORTAL}}': sanitize(dados.telPortal)
     };
 
-    for (let i = 1; i <= 3; i++) {
-      const term = dados.terminais && dados.terminais[i - 1];
-      replacements[`{{ADQ_${i}}}`] = sanitize(term ? dados.adquirente : '');
-      replacements[`{{AFIL_${i}}}`] = sanitize(term ? term.afil : '');
-      replacements[`{{LOG_${i}}}`] = sanitize(term ? term.log : '');
-    }
+    const ROW_TEMPLATE = '<ns0:tr ns2:paraId="6248D883"><ns0:tblPrEx><ns0:tblBorders><ns0:top ns0:val="single" ns0:color="auto" ns0:sz="4" ns0:space="0" /><ns0:left ns0:val="single" ns0:color="auto" ns0:sz="4" ns0:space="0" /><ns0:bottom ns0:val="single" ns0:color="auto" ns0:sz="4" ns0:space="0" /><ns0:right ns0:val="single" ns0:color="auto" ns0:sz="4" ns0:space="0" /><ns0:insideH ns0:val="single" ns0:color="auto" ns0:sz="4" ns0:space="0" /><ns0:insideV ns0:val="single" ns0:color="auto" ns0:sz="4" ns0:space="0" /></ns0:tblBorders><ns0:tblCellMar><ns0:top ns0:w="0" ns0:type="dxa" /><ns0:left ns0:w="108" ns0:type="dxa" /><ns0:bottom ns0:w="0" ns0:type="dxa" /><ns0:right ns0:w="108" ns0:type="dxa" /></ns0:tblCellMar></ns0:tblPrEx><ns0:trPr><ns0:trHeight ns0:val="207" ns0:hRule="atLeast" /></ns0:trPr><ns0:tc><ns0:tcPr><ns0:tcW ns0:w="3113" ns0:type="dxa" /></ns0:tcPr><ns0:p ns2:paraId="1F347174"><ns0:pPr><ns0:pStyle ns0:val="14" /><ns0:rPr><ns0:rFonts ns0:hint="default" ns0:ascii="Arial" ns0:hAnsi="Arial" ns0:cs="Arial" /><ns0:sz ns0:val="20" /><ns0:szCs ns0:val="20" /><ns0:lang ns0:val="pt-BR" /></ns0:rPr></ns0:pPr><ns0:r><ns0:rPr><ns0:rFonts ns0:hint="default" ns0:ascii="Arial" ns0:hAnsi="Arial" ns0:cs="Arial" /><ns0:sz ns0:val="20" /><ns0:szCs ns0:val="20" /><ns0:lang ns0:val="pt-BR" /></ns0:rPr><ns0:t>{{ADQ}}</ns0:t></ns0:r></ns0:p></ns0:tc><ns0:tc><ns0:tcPr><ns0:tcW ns0:w="2549" ns0:type="dxa" /></ns0:tcPr><ns0:p ns2:paraId="60CD1A79"><ns0:pPr><ns0:pStyle ns0:val="14" /><ns0:rPr><ns0:rFonts ns0:ascii="Arial" ns0:hAnsi="Arial" ns0:cs="Arial" /><ns0:sz ns0:val="20" /><ns0:szCs ns0:val="20" /></ns0:rPr></ns0:pPr><ns0:r><ns0:rPr><ns0:rFonts ns0:ascii="Arial" ns0:hAnsi="Arial" ns0:cs="Arial" /><ns0:sz ns0:val="20" /><ns0:szCs ns0:val="20" /></ns0:rPr><ns0:t>{{AFIL}}</ns0:t></ns0:r></ns0:p></ns0:tc><ns0:tc><ns0:tcPr><ns0:tcW ns0:w="2832" ns0:type="dxa" /></ns0:tcPr><ns0:p ns2:paraId="377D7045"><ns0:pPr><ns0:pStyle ns0:val="14" /><ns0:rPr><ns0:rFonts ns0:ascii="Arial" ns0:hAnsi="Arial" ns0:cs="Arial" /><ns0:sz ns0:val="20" /><ns0:szCs ns0:val="20" /></ns0:rPr></ns0:pPr><ns0:r><ns0:rPr><ns0:rFonts ns0:ascii="SimSun" ns0:hAnsi="SimSun" ns0:eastAsia="SimSun" ns0:cs="SimSun" /><ns0:sz ns0:val="24" /><ns0:szCs ns0:val="24" /></ns0:rPr><ns0:t>{{LOG}}</ns0:t></ns0:r></ns0:p></ns0:tc></ns0:tr>';
+
+    let linhasTerminaisXml = '';
+    const listaTerminais = dados.terminais && dados.terminais.length ? dados.terminais : [{ afil: '', log: '' }];
+    listaTerminais.forEach(term => {
+      linhasTerminaisXml += ROW_TEMPLATE
+        .replace('{{ADQ}}', sanitize(dados.adquirente))
+        .replace('{{AFIL}}', sanitize(term.afil))
+        .replace('{{LOG}}', sanitize(term.log));
+    });
+
+    xml = xml.replace('{{LINHAS_TERMINAIS_XML}}', linhasTerminaisXml);
 
     for (const [key, val] of Object.entries(replacements)) {
       xml = xml.replaceAll(key, val);
@@ -1089,9 +1094,16 @@
         const blob = await gerarChecklistDocx(dadosChecklist);
         if (blob) {
           docxBlobCache = blob;
-          const cnpjClean = (emailData.cnpj || '').replace(/\D/g, '');
-          docxFilenameCache = `Checklist_TEF_${cnpjClean || 'Cliente'}_${currentProtocol}.docx`;
-          formData.append('attachment', blob, docxFilenameCache);
+          const hoje = new Date();
+          const d = String(hoje.getDate()).padStart(2, '0');
+          const m = String(hoje.getMonth() + 1).padStart(2, '0');
+          const y = hoje.getFullYear();
+          const dataGeracao = `${d}-${m}-${y}`;
+
+          const cnpjFormatado = (emailData.cnpj || '').replace(/\//g, '-').trim();
+          const nomeEmpresa = (emailData.fantasia || emailData.razao || 'CLIENTE').replace(/[\\/:*?"<>|]/g, '').trim();
+
+          docxFilenameCache = `CHECK LIST ${cnpjFormatado} - ${nomeEmpresa} ${dataGeracao}.docx`;
         }
       } catch (err) {
         console.error('Erro ao gerar checklist docx:', err);
@@ -1165,8 +1177,7 @@
     // 🛡️ Solicita o token invisível do Google reCAPTCHA antes de submeter
     if (typeof grecaptcha !== 'undefined') {
       grecaptcha.ready(function() {
-        grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
-          $('fs_recaptcha').value = token || '';
+        grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function() {
           $('fs_native_form').submit();
         }).catch(function() {
           $('fs_native_form').submit();
