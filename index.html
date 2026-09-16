@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Formulário de Aquisição — TEF / SMARTPOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="docx_template_b64.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
   <!-- Google reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI"></script>
@@ -425,10 +426,13 @@
         </div>
         <div class="section">
           <div class="section-title"><div class="step-badge">3</div>Dados da Maquininha</div>
-          <div class="field-group">
-            <div class="field"><label>Número de Série <span class="req">*</span></label><input type="text" name="spos-serie" id="spos-serie" class="req-field" disabled /></div>
-            <div class="field"><label>Modelo <span class="req">*</span></label><input type="text" name="spos-modelo" id="spos-modelo" class="req-field" disabled /></div>
+          <div class="field-group" style="margin-bottom:16px;">
+            <div class="field" style="max-width:240px;">
+              <label>Qtd. Maquininhas <span class="req">*</span></label>
+              <input type="number" name="spos-quantidade" id="spos-qtd" class="req-field" min="1" disabled />
+            </div>
           </div>
+          <div id="spos-terminais-container" style="display:flex; flex-direction:column; gap:12px;"></div>
         </div>
         <div class="section">
           <div class="section-title"><div class="step-badge">4</div>Aplicativo AppSuperTEF</div>
@@ -477,6 +481,14 @@
     <div class="success-text">
       O número do seu protocolo é: <strong id="protocolo-view" style="color:#016855;"></strong><br/><br/>
       Nossa equipe fará a conferência e entrará em contato em breve para finalizar a instalação.
+    </div>
+    <div id="box-download-docx" class="hidden" style="margin-top: 22px; padding: 16px; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 12px; text-align: center;">
+      <div style="font-size: 0.9rem; font-weight: 700; color: #065f46; margin-bottom: 6px;">📄 Documento Oficial Gerado!</div>
+      <p style="font-size: 0.85rem; color: #047857; margin-bottom: 12px;">Uma cópia do Checklist preenchido foi anexada ao e-mail enviado à nossa equipe. Se desejar guardar uma cópia, você pode baixar agora:</p>
+      <button type="button" id="btn-download-docx" class="btn" style="background: #016855; color: #fff; padding: 12px 20px; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; width: auto; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(1,104,85,0.25);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Baixar Cópia do Checklist (.docx)
+      </button>
     </div>
     <div style="margin-top: 28px; padding: 18px; background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 12px; font-size: 0.88rem; color: #b45309; text-align: left; line-height: 1.5;">
       <strong style="display:flex;align-items:center;margin-bottom:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Preencheu algum dado errado?</strong>
@@ -660,6 +672,70 @@
     });
   }
 
+  function renderTerminaisSPOS(qtd) {
+    const container = $('spos-terminais-container');
+    if (!container) return;
+    const count = parseInt(qtd, 10) || 0;
+    if (count <= 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    const saved = [];
+    container.querySelectorAll('.spos-terminal-row').forEach(row => {
+      const serie = row.querySelector('.spos-serie-input')?.value || '';
+      const modelo = row.querySelector('.spos-modelo-input')?.value || '';
+      saved.push({ serie, modelo });
+    });
+
+    let html = '';
+    for (let i = 1; i <= count; i++) {
+      const valSerie = saved[i - 1]?.serie || '';
+      const valModelo = saved[i - 1]?.modelo || '';
+      const labelMaq = count === 1 ? 'Maquininha' : `Maquininha ${i}`;
+      
+      html += `
+        <div class="spos-terminal-row" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px;">
+          <div style="font-size:0.85rem; font-weight:700; color:#014d3f; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span>📱 ${labelMaq}</span>
+            ${i === 1 && count > 1 ? '<button type="button" id="btn-replicar-spos" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; border-radius:6px; font-size:0.75rem; padding:4px 8px; cursor:pointer; font-weight:600;">📋 Copiar modelo para todas</button>' : ''}
+          </div>
+          <div class="field-group cols">
+            <div class="field">
+              <label>Número de Série <span class="req">*</span></label>
+              <input type="text" class="req-field spos-serie-input" data-index="${i}" value="${valSerie}" required />
+            </div>
+            <div class="field">
+              <label>Modelo <span class="req">*</span></label>
+              <input type="text" class="req-field spos-modelo-input" data-index="${i}" value="${valModelo}" placeholder="Ex: GPOS700, P2, V2..." required />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+
+    const isSposActive = !$('section-smartpos').classList.contains('hidden');
+    container.querySelectorAll('input').forEach(f => {
+      f.disabled = !isSposActive;
+      if (f.classList.contains('req-field')) f.required = isSposActive;
+    });
+
+    const btnReplicar = $('btn-replicar-spos');
+    if (btnReplicar) {
+      btnReplicar.addEventListener('click', () => {
+        const primeiroModelo = container.querySelector('.spos-modelo-input[data-index="1"]')?.value || '';
+        container.querySelectorAll('.spos-modelo-input').forEach(input => input.value = primeiroModelo);
+      });
+    }
+  }
+
+  if ($('spos-qtd')) {
+    $('spos-qtd').addEventListener('input', e => {
+      renderTerminaisSPOS(e.target.value);
+    });
+  }
+
   function checkSubmitVisibility() {
     const prod = document.querySelector('input[name="produto"]:checked')?.value;
     if (!prod) {
@@ -712,6 +788,7 @@
         copyVal('spos-nome', 'loja-nome');
         copyVal('spos-email', 'loja-email');
         copyVal('spos-tel', 'loja-tel');
+        copyVal('spos-qtd', 'tef-qtd');
       } else {
         copyVal('tef-cnpj', 'spos-cnpj');
         copyVal('tef-razao', 'spos-razao');
@@ -719,15 +796,19 @@
         copyVal('loja-nome', 'spos-nome');
         copyVal('loja-email', 'spos-email');
         copyVal('loja-tel', 'spos-tel');
+        copyVal('tef-qtd', 'spos-qtd');
       }
 
       $('section-tef').classList.toggle('hidden', !isTEF);
       $('section-smartpos').classList.toggle('hidden', isTEF);
       setSection('section-tef', isTEF);
       setSection('section-smartpos', !isTEF);
-      if (isTEF && !$('tef-qtd').value) {
-        $('tef-qtd').value = '1';
-        renderTerminaisTEF(1);
+      if (isTEF) {
+        if (!$('tef-qtd').value) $('tef-qtd').value = '1';
+        renderTerminaisTEF($('tef-qtd').value);
+      } else {
+        if (!$('spos-qtd').value) $('spos-qtd').value = '1';
+        renderTerminaisSPOS($('spos-qtd').value);
       }
       resetPortal();
       resetApp();
@@ -782,14 +863,58 @@
     if (e.target === $('confirmModal')) fecharModal();
   });
 
-    $('btn-enviar-solicitacao').addEventListener('click', () => {
+    async function gerarChecklistDocx(dados) {
+    if (typeof JSZip === 'undefined' || typeof DOCX_TEMPLATE_B64 === 'undefined') {
+      console.warn('JSZip ou DOCX_TEMPLATE_B64 não carregados.');
+      return null;
+    }
+
+    const zip = await JSZip.loadAsync(DOCX_TEMPLATE_B64, { base64: true });
+    let xml = await zip.file('word/document.xml').async('string');
+
+    const sanitize = str => (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    const replacements = {
+      '{{CNPJ}}': sanitize(dados.cnpj),
+      '{{RAZAO_SOCIAL}}': sanitize(dados.razao),
+      '{{FANTASIA}}': sanitize(dados.fantasia || dados.razao),
+      '{{ENDERECO}}': sanitize(dados.endereco),
+      '{{BAIRRO_CIDADE_UF_CEP}}': sanitize(dados.bairroCidadeUfCep),
+      '{{QTD_CAIXAS}}': String(dados.qtdCaixas || 1).padStart(2, '0'),
+      '{{NOME_RESP_LOJA}}': sanitize(dados.nomeLoja),
+      '{{EMAIL_RESP_LOJA}}': sanitize(dados.emailLoja),
+      '{{TEL_RESP_LOJA}}': sanitize(dados.telLoja),
+      '{{NOME_RESP_PORTAL}}': sanitize(dados.nomePortal),
+      '{{EMAIL_RESP_PORTAL}}': sanitize(dados.emailPortal),
+      '{{TEL_RESP_PORTAL}}': sanitize(dados.telPortal)
+    };
+
+    for (let i = 1; i <= 3; i++) {
+      const term = dados.terminais && dados.terminais[i - 1];
+      replacements[`{{ADQ_${i}}}`] = sanitize(term ? dados.adquirente : '');
+      replacements[`{{AFIL_${i}}}`] = sanitize(term ? term.afil : '');
+      replacements[`{{LOG_${i}}}`] = sanitize(term ? term.log : '');
+    }
+
+    for (const [key, val] of Object.entries(replacements)) {
+      xml = xml.replaceAll(key, val);
+    }
+
+    zip.file('word/document.xml', xml);
+    return await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    });
+  }
+
+  $('btn-enviar-solicitacao').addEventListener('click', () => {
     if (!$('mainForm').reportValidity()) return;
     const prodRaw = document.querySelector('input[name="produto"]:checked').value;
     const prodFriendly = prodRaw === 'TEF' ? 'PinPad / TEF' : 'SMARTPOS / TEF';
     const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,'');
     const randomHex = Math.random().toString(16).slice(2, 6).toUpperCase();
     currentProtocol = `${prodRaw}-${dateStr}-${randomHex}`;
-    emailData = { prod: prodFriendly, protocol: currentProtocol };
+    emailData = { prod: prodFriendly, prodRaw: prodRaw, protocol: currentProtocol };
 
     let summaryHtml = '';
 
@@ -803,18 +928,40 @@
 
       let txtTerminais = '';
       const rows = $('tef-terminais-container').querySelectorAll('.tef-terminal-row');
+      emailData.terminais = [];
       rows.forEach((row, idx) => {
         const num = idx + 1;
         const afil = row.querySelector('.tef-afil-input')?.value || '';
         const log = row.querySelector('.tef-log-input')?.value || '';
+        emailData.terminais.push({ afil, log });
         txtTerminais += `\nTERMINAL ${num}: AFILIACAO: ${afil} | LOGICO: ${log}`;
       });
 
-      const mesmo = document.querySelector('input[name="mesmo-responsavel"]:checked').value;
+      const mesmo = document.querySelector('input[name="mesmo-responsavel"]:checked')?.value;
       emailData.fantasia = getVal('tef-fantasia');
       emailData.razao = getVal('tef-razao');
       emailData.userEmail = email;
       emailData.cnpj = cnpj;
+      emailData.adquirente = adq;
+      emailData.endereco = getVal('tef-end');
+      emailData.bairro = getVal('tef-bairro');
+      emailData.cidade = getVal('tef-cidade');
+      emailData.uf = getVal('tef-uf');
+      emailData.qtd = count;
+      emailData.nomeLoja = getVal('loja-nome');
+      emailData.emailLoja = email;
+      emailData.telLoja = tel;
+
+      if (mesmo === 'SIM') {
+        emailData.nomePortal = getVal('loja-nome');
+        emailData.emailPortal = email;
+        emailData.telPortal = tel;
+      } else {
+        emailData.nomePortal = getVal('portal-nome');
+        emailData.emailPortal = getVal('portal-email');
+        emailData.telPortal = getVal('portal-tel');
+      }
+
       emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: ${prodFriendly}\nQTD: ${count}\nADQUIRENTE: ${adq}${txtTerminais}\nCNPJ: ${cnpj}\nRAZAO: ${getVal('tef-razao')}\nFANTASIA: ${getVal('tef-fantasia')}\nENDERECO: ${getVal('tef-end')}\nBAIRRO: ${getVal('tef-bairro')}\nCIDADE: ${getVal('tef-cidade')}\nUF: ${getVal('tef-uf')}\nRESP. LOJA: ${getVal('loja-nome')} | ${email} | ${tel}`;
       if (mesmo === 'SIM') emailData.txt += `\nRESP. PORTAL: MESMO DA LOJA`;
       else emailData.txt += `\nRESP. PORTAL: ${getVal('portal-nome')} | ${getVal('portal-email')} | ${getVal('portal-tel')}`;
@@ -822,7 +969,7 @@
       summaryHtml = `
         <div class="modal-summary-row">
           <span class="modal-summary-label">Equipamento:</span>
-          <span class="modal-summary-value"><span style=\'display:flex;align-items:center;\'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg> ${prodFriendly}</span> (${count} ${count > 1 ? 'máquinas' : 'máquina'})</span>
+          <span class="modal-summary-value"><span style='display:flex;align-items:center;'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg> ${prodFriendly}</span> (${count} ${count > 1 ? 'máquinas' : 'máquina'})</span>
         </div>
         <div class="modal-summary-row">
           <span class="modal-summary-label">Adquirente:</span>
@@ -838,32 +985,42 @@
         </div>
       `;
     } else {
+      const count = parseInt(getVal('spos-qtd'), 10) || 1;
       const cnpj = getVal('spos-cnpj');
       const emp = getVal('spos-fantasia') || getVal('spos-razao');
-      const serie = getVal('spos-serie');
-      const mod = getVal('spos-modelo');
-      const app = document.querySelector('input[name="app-instalado"]:checked').value;
+      const app = document.querySelector('input[name="app-instalado"]:checked')?.value || 'NÃO';
       const email = getVal('spos-email');
       const tel = getVal('spos-tel');
+
+      let txtTerminais = '';
+      let modalTerminaisHtml = '';
+      const rows = $('spos-terminais-container').querySelectorAll('.spos-terminal-row');
+      rows.forEach((row, idx) => {
+        const num = idx + 1;
+        const serie = row.querySelector('.spos-serie-input')?.value || '';
+        const mod = row.querySelector('.spos-modelo-input')?.value || '';
+        txtTerminais += `\nMAQUININHA ${num}: SERIE: ${serie} | MODELO: ${mod}`;
+        modalTerminaisHtml += `<div style="font-size:0.85rem; margin-top:2px;">• Máquina ${num}: <strong>${mod || 'N/I'}</strong> (Série: ${serie || 'N/I'})</div>`;
+      });
 
       emailData.fantasia = getVal('spos-fantasia');
       emailData.razao = getVal('spos-razao');
       emailData.userEmail = email;
       emailData.cnpj = cnpj;
-      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: ${prodFriendly}\nCNPJ: ${cnpj}\nRAZAO: ${getVal('spos-razao')}\nFANTASIA: ${getVal('spos-fantasia')}\nSERIE: ${serie}\nMODELO: ${mod}\nAPP_INSTALADO: ${app}\nRESPONSAVEL: ${getVal('spos-nome')}\nEMAIL: ${email}\nTELEFONE: ${tel}`;
+      emailData.txt = `[ PROTOCOLO: ${currentProtocol} ]\nEQUIPAMENTO: ${prodFriendly}\nQTD: ${count}\nCNPJ: ${cnpj}\nRAZAO: ${getVal('spos-razao')}\nFANTASIA: ${getVal('spos-fantasia')}${txtTerminais}\nAPP_INSTALADO: ${app}\nRESPONSAVEL: ${getVal('spos-nome')}\nEMAIL: ${email}\nTELEFONE: ${tel}`;
 
       summaryHtml = `
         <div class="modal-summary-row">
           <span class="modal-summary-label">Equipamento:</span>
-          <span class="modal-summary-value"><span style=\'display:flex;align-items:center;\'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> ${prodFriendly}</span></span>
+          <span class="modal-summary-value"><span style='display:flex;align-items:center;'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> ${prodFriendly}</span> (${count} ${count > 1 ? 'máquinas' : 'máquina'})</span>
         </div>
         <div class="modal-summary-row">
           <span class="modal-summary-label">Empresa / CNPJ:</span>
           <span class="modal-summary-value">${emp} (${cnpj})</span>
         </div>
         <div class="modal-summary-row">
-          <span class="modal-summary-label">Nº de Série / Modelo:</span>
-          <span class="modal-summary-value">${serie} (${mod})</span>
+          <span class="modal-summary-label">Maquininhas:</span>
+          <span class="modal-summary-value">${modalTerminaisHtml}</span>
         </div>
         <div class="modal-summary-row">
           <span class="modal-summary-label">E-mail para Recibo:</span>
@@ -876,23 +1033,60 @@
     $('confirmModal').classList.add('active');
   });
 
-  $('btn-modal-confirmar').addEventListener('click', function() {
+  let docxBlobCache = null;
+  let docxFilenameCache = '';
+
+  $('btn-modal-confirmar').addEventListener('click', async function() {
     const btn = this;
     const btnCancel = $('btn-modal-cancelar');
-    btn.innerHTML = '⏳ Enviando...';
+    btn.innerHTML = '⏳ Gerando documento e enviando...';
     btn.disabled = true;
     btnCancel.disabled = true;
 
-    const nome_empresa = emailData.fantasia || emailData.razao;
+    const nome_empresa = emailData.fantasia || emailData.razao || 'Cliente';
     const _subject = `Nova Solicitação ${nome_empresa} (${emailData.prod}) #${currentProtocol}`;
-    const payload = {
-      _subject: _subject,
-      _template: 'box',
-      PROTOCOLO: currentProtocol,
-      DADOS_COMPLETOS: emailData.txt
-    };
 
-    // Envia apenas o payload bruto para o FormSubmit (empresa)
+    const formData = new FormData();
+    formData.append('_subject', _subject);
+    formData.append('_template', 'box');
+    formData.append('PROTOCOLO', currentProtocol);
+    formData.append('DADOS_COMPLETOS', emailData.txt);
+
+    docxBlobCache = null;
+    docxFilenameCache = '';
+
+    if (emailData.prodRaw === 'TEF') {
+      try {
+        const dadosChecklist = {
+          cnpj: emailData.cnpj,
+          razao: emailData.razao,
+          fantasia: emailData.fantasia,
+          endereco: emailData.endereco,
+          bairroCidadeUfCep: `${emailData.bairro || ''} – ${emailData.cidade || ''} - ${emailData.uf || ''}`,
+          qtdCaixas: emailData.qtd,
+          adquirente: emailData.adquirente,
+          terminais: emailData.terminais,
+          nomeLoja: emailData.nomeLoja,
+          emailLoja: emailData.emailLoja,
+          telLoja: emailData.telLoja,
+          nomePortal: emailData.nomePortal,
+          emailPortal: emailData.emailPortal,
+          telPortal: emailData.telPortal
+        };
+
+        const blob = await gerarChecklistDocx(dadosChecklist);
+        if (blob) {
+          docxBlobCache = blob;
+          const cnpjClean = (emailData.cnpj || '').replace(/\D/g, '');
+          docxFilenameCache = `Checklist_TEF_${cnpjClean || 'Cliente'}_${currentProtocol}.docx`;
+          formData.append('attachment', blob, docxFilenameCache);
+        }
+      } catch (err) {
+        console.error('Erro ao gerar checklist docx:', err);
+      }
+    }
+
+    // Envia o FormData com anexo para o FormSubmit (empresa)
     // 🛡️ Solicita o token invisível do Google reCAPTCHA
     grecaptcha.ready(function() {
       grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
@@ -900,10 +1094,9 @@
         fetch('https://formsubmit.co/ajax/c294a83746ea06a6acd4f3410119ae2a', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(payload)
+          body: formData
         })
         .then(r => {
           if (!r.ok) throw new Error('Falha no status HTTP ' + r.status);
@@ -915,11 +1108,32 @@
           hide($('formContainer'));
           hide($('mainHeader'));
           show($('successCard'));
+
+          // Se gerou documento oficial, exibe o botão de download
+          if (docxBlobCache) {
+            show($('box-download-docx'));
+            const btnDown = $('btn-download-docx');
+            if (btnDown) {
+              btnDown.onclick = () => {
+                const url = URL.createObjectURL(docxBlobCache);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = docxFilenameCache;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              };
+            }
+          } else {
+            hide($('box-download-docx'));
+          }
+
           window.scrollTo({ top: 0, behavior: 'smooth' });
         })
         .catch(e => {
           alert("Não foi possível enviar a solicitação no momento. Por favor, verifique a conexão e tente novamente.");
-          btn.innerHTML = '<span style="display:flex;align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><polyline points="20 6 9 17 4 12"></polyline></svg> Sim</span>, Enviar Agora';
+          btn.innerHTML = '🔒 Confirmar Aquisição';
           btn.disabled = false;
           btnCancel.disabled = false;
         });
@@ -928,26 +1142,31 @@
     });
   });
 
-  // UX: NAVEGAÇÃO INTELIGENTE (Auto-Focus no Celular / Enter)
-  const allInputs = Array.from(document.querySelectorAll('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), select'));
-  allInputs.forEach((input, index) => {
-    // Avança para o próximo campo ao apertar "Enter" ou "Avançar" no teclado mobile
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
+  // UX: NAVEGAÇÃO INTELIGENTE DINÂMICA (Auto-Focus no Celular / Enter)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches && e.target.matches('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), select')) {
+      e.preventDefault();
+      const allInputs = Array.from(document.querySelectorAll('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), select'));
+      const index = allInputs.indexOf(e.target);
+      if (index > -1) {
         let next = index + 1;
         while (next < allInputs.length && (allInputs[next].disabled || allInputs[next].offsetParent === null)) next++;
         if (next < allInputs.length) allInputs[next].focus();
       }
-    });
-    // Auto-avanço para campos com limite exato (CNPJ, Telefone) quando preenchidos
-    input.addEventListener('input', (e) => {
-      if (input.maxLength && input.maxLength > 0 && input.value.length >= input.maxLength) {
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const input = e.target;
+    if (input.matches && input.matches('input') && input.maxLength && input.maxLength > 0 && input.value.length >= input.maxLength) {
+      const allInputs = Array.from(document.querySelectorAll('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), select'));
+      const index = allInputs.indexOf(input);
+      if (index > -1) {
         let next = index + 1;
         while (next < allInputs.length && (allInputs[next].disabled || allInputs[next].offsetParent === null)) next++;
         if (next < allInputs.length) allInputs[next].focus();
       }
-    });
+    }
   });
 
 </script>
