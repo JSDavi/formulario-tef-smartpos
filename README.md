@@ -19,9 +19,10 @@ Aplicação web moderna, responsiva e automatizada para captação, conferência
   - Tabela de equipamentos 100% dinâmica (ajusta-se automaticamente à quantidade exata de terminais cadastrados: 1, 5, 10 ou mais).
   - Nomenclatura padronizada: `CHECK LIST [CNPJ] - [NOME DA EMPRESA] [DATA].docx`.
   - Disponibiliza download local imediato na tela de confirmação.
-- **Disparo de E-mail com Anexo (FormSubmit Multipart):**
-  - Envio nativo em segundo plano via `iframe` oculto, garantindo entrega do anexo binário (.docx) e resumo completo na caixa da equipe técnica.
-  - Sem recarregamento brusco da página e sem poluição visual no corpo do e-mail.
+- **Disparo de E-mail com Anexo (Google Apps Script / Gmail):**
+  - Envio nativo e seguro para o Web App do Google Apps Script da Infobrasil (`davisilvace@gmail.com`).
+  - Anexo binário (.docx) codificado em Base64 e entregue diretamente pelo Gmail via `GmailApp`.
+  - Resumo executivo formatado em HTML elegante e legível na caixa de entrada.
 - **Segurança & Proteção contra Bots:**
   - Proteção invisível via **Google reCAPTCHA v3**.
   - Validação estrita de campos obrigatórios e máscaras de digitação em tempo real (`Cleave.js`).
@@ -39,7 +40,7 @@ Aplicação web moderna, responsiva e automatizada para captação, conferência
 - **Máscaras de Entrada:** `Cleave.js` (v1.6.0).
 - **Segurança:** Google reCAPTCHA v3.
 - **API Externa:** `BrasilAPI` (v1).
-- **Entrega de Formulários:** `FormSubmit`.
+- **Entrega de Formulários & E-mail:** `Google Apps Script` + `GmailApp`.
 - **Hospedagem:** GitHub Pages.
 
 ---

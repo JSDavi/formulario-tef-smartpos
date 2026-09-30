@@ -527,17 +527,6 @@
     </div>
   </div>
 
-  <!-- Envio nativo multipart para o FormSubmit com suporte a anexos de arquivos -->
-  <iframe name="formsubmit_frame" id="formsubmit_frame" style="display:none; width:0; height:0; border:0;"></iframe>
-  <form id="fs_native_form" action="https://formsubmit.co/c294a83746ea06a6acd4f3410119ae2a" method="POST" enctype="multipart/form-data" target="formsubmit_frame" style="display:none;">
-    <input type="hidden" name="_subject" id="fs_subject">
-    <input type="hidden" name="_template" value="box">
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="PROTOCOLO" id="fs_protocolo">
-    <input type="hidden" name="DADOS_COMPLETOS" id="fs_dados">
-    <input type="file" name="attachment" id="fs_attachment">
-  </form>
-
   <!-- Modal de Confirmação Rápida -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-card">
@@ -1120,29 +1109,42 @@
       }
     }
 
-    // Preenche o formulário nativo com suporte oficial a anexo multipart
-    $('fs_subject').value = _subject;
-    $('fs_protocolo').value = currentProtocol;
-    $('fs_dados').value = emailData.txt;
+    // Helper para converter Blob em Base64 para envio direto ao Google Apps Script
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const res = reader.result || '';
+          const b64 = res.includes(',') ? res.split(',')[1] : res;
+          resolve(b64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
 
-    const fileInput = $('fs_attachment');
+    let base64Docx = null;
     if (docxBlobCache) {
       try {
-        const file = new File([docxBlobCache], docxFilenameCache, {
-          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        });
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        fileInput.files = dt.files;
-        fileInput.name = 'attachment';
+        base64Docx = await blobToBase64(docxBlobCache);
       } catch (err) {
-        console.warn('DataTransfer não suportado pelo navegador:', err);
-        fileInput.removeAttribute('name');
+        console.warn('Erro ao converter DOCX para base64:', err);
       }
-    } else {
-      fileInput.value = '';
-      fileInput.removeAttribute('name');
     }
+
+    const payload = {
+      protocolo: currentProtocol,
+      produto: emailData.prod,
+      empresa: emailData.fantasia || emailData.razao || 'Cliente',
+      cnpj: emailData.cnpj || '',
+      responsavel: emailData.nomeLoja || emailData.nomePortal || '',
+      email: emailData.emailLoja || emailData.userEmail || '',
+      telefone: emailData.telLoja || '',
+      qtd: emailData.qtd || 1,
+      resumoTexto: emailData.txt,
+      arquivoBase64: base64Docx,
+      nomeArquivo: docxFilenameCache || null
+    };
 
     let isDone = false;
     const finalizarSucesso = () => {
@@ -1177,24 +1179,40 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const iframe = $('formsubmit_frame');
-    iframe.onload = () => {
-      finalizarSucesso();
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbx-fteMqbsTIqoPNyjQZ1IPanpk5EUqDzuf8_TkhcPVkYHgrWosvOhZEQoYRKVkdDLl/exec';
+
+    const enviarParaGoogle = () => {
+      fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        finalizarSucesso();
+      })
+      .catch((err) => {
+        console.warn('Fallback no envio:', err);
+        finalizarSucesso();
+      });
+
+      // Fallback de segurança para garantir a transição da tela
+      setTimeout(finalizarSucesso, 4000);
     };
-    // Fallback de segurança caso a política de cross-origin atrase ou silencie o evento onload do iframe
-    setTimeout(finalizarSucesso, 4000);
 
     // 🛡️ Solicita o token invisível do Google reCAPTCHA antes de submeter
     if (typeof grecaptcha !== 'undefined') {
       grecaptcha.ready(function() {
         grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function() {
-          $('fs_native_form').submit();
+          enviarParaGoogle();
         }).catch(function() {
-          $('fs_native_form').submit();
+          enviarParaGoogle();
         });
       });
     } else {
-      $('fs_native_form').submit();
+      enviarParaGoogle();
     }
   });
 
