@@ -162,15 +162,15 @@
       filter: none;
     }
 
-    .product-img-box { position: relative; width: 100%; max-width: 220px; height: 210px; border-radius: 12px; overflow: hidden; background: #fff; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.35s ease; }
+    .product-img-box { position: relative; width: 100%; max-width: 260px; height: 260px; border-radius: 12px; overflow: hidden; background: #fff; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.35s ease; }
     .product-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
     .product-option input:checked + label .product-img-box {
       transform: scale(1.04);
       border-color: #bfdbfe;
     }
 
-    .blur-tef { position: absolute; top: 26%; left: 35%; width: 30%; height: 6%; background: #1a1a1a; filter: blur(3px); border-radius: 2px; }
-    .blur-spos { position: absolute; bottom: 8%; left: 35%; width: 30%; height: 5%; background: #111; filter: blur(3px); border-radius: 2px; }
+    .blur-tef { position: absolute; top: 25%; left: 33%; width: 34%; height: 6%; background: #1a1a1a; filter: blur(3px); border-radius: 2px; }
+    .blur-spos { position: absolute; bottom: 8%; left: 34%; width: 32%; height: 5%; background: #111; filter: blur(3px); border-radius: 2px; }
     .product-name { font-size: 1.3rem; font-weight: 800; color: #016855; margin-top: 6px; }
     .product-desc { font-size: 0.85rem; color: #6b7280; line-height: 1.4; }
     .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid #02856e; border-radius: 10px; padding: 18px 20px; margin-bottom: 22px; font-size: 0.88rem; color: #016855; line-height: 1.6; }
@@ -330,12 +330,20 @@
             <input type="radio" id="opt-tef" name="produto" value="TEF" required />
             <label for="opt-tef">
               <span class="badge-selected">✓ SELECIONADO</span>
-              <div class="product-img-box">
+              <div class="product-img-box" style="position: relative;">
                 <img src="TEF.jpg" alt="Equipamento TEF" />
                 <div class="blur-tef"></div>
+                <!-- Indicador Visual do Fio/Cabo -->
+                <svg width="40" height="80" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; right: 8px; bottom: 10px; transform: rotate(15deg); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); opacity: 0.85;">
+                  <path d="M12 21v-4"></path>
+                  <path d="M12 17c0-2-3-2-3-4s3-2 3-4-3-2-3-4 3-2 3-4V3"></path>
+                  <rect x="10" y="2" width="4" height="4" rx="1" ry="1" fill="#4b5563"></rect>
+                  <!-- Plug connector -->
+                  <path d="M11 2v-2h2v2"></path>
+                </svg>
               </div>
               <span class="product-name">PinPad / TEF</span>
-              <span class="product-desc">Terminal integrado ao computador / caixa</span>
+              <span class="product-desc" style="font-weight: 600; color: #0f172a;">Equipamento conectado ao computador</span>
             </label>
           </div>
           <div class="product-option">
@@ -347,7 +355,7 @@
                 <div class="blur-spos"></div>
               </div>
               <span class="product-name">SMARTPOS / TEF</span>
-              <span class="product-desc">Maquininha inteligente com Android</span>
+              <span class="product-desc" style="font-weight: 600; color: #0f172a;">Equipamento portátil (Sem fio)</span>
             </label>
           </div>
         </div>
@@ -471,7 +479,7 @@
             <div class="field-group">
               <div class="field"><label>Nome Completo <span class="req">*</span></label><input type="text" name="spos-nome" id="spos-nome" class="req-field" disabled /></div>
               <div class="field-group cols">
-                <div class="field"><label>E-mail (Para receber recibo) <span class="req">*</span></label><input type="email" name="spos-email" id="spos-email" class="req-field" disabled /></div>
+                <div class="field"><label>E-mail <span class="req">*</span></label><input type="email" name="spos-email" id="spos-email" class="req-field" disabled /></div>
                 <div class="field"><label>Telefone <span class="req">*</span></label><input type="tel" name="spos-telefone" id="spos-tel" class="req-field" maxlength="15" disabled /></div>
               </div>
             </div>
@@ -492,17 +500,13 @@
       O número do seu protocolo é: <strong id="protocolo-view" style="color:#016855;"></strong><br/><br/>
       Nossa equipe fará a conferência e entrará em contato em breve para finalizar a instalação.
     </div>
-    <div id="box-download-docx" class="hidden" style="margin-top: 22px; padding: 16px; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 12px; text-align: center;">
-      <div style="font-size: 0.9rem; font-weight: 700; color: #065f46; margin-bottom: 6px;">📄 Documento Oficial Gerado!</div>
-      <p style="font-size: 0.85rem; color: #047857; margin-bottom: 12px;">Uma cópia do Checklist preenchido foi anexada ao e-mail enviado à nossa equipe. Se desejar guardar uma cópia, você pode baixar agora:</p>
-      <button type="button" id="btn-download-docx" class="btn" style="background: #016855; color: #fff; padding: 12px 20px; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; width: auto; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(1,104,85,0.25);">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Baixar Cópia do Checklist (.docx)
+    <div style="margin-top: 32px;">
+      <button type="button" class="btn btn-secondary" onclick="window.location.reload();" style="font-size: 0.95rem; padding: 14px 24px; background: #e2e8f0; color: #475569; font-weight: 700; border-radius: 12px;">
+        <span style="display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Retornar à Tela Inicial
+        </span>
       </button>
-    </div>
-    <div style="margin-top: 28px; padding: 18px; background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 12px; font-size: 0.88rem; color: #b45309; text-align: left; line-height: 1.5;">
-      <strong style="display:flex;align-items:center;margin-bottom:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Preencheu algum dado errado?</strong>
-      Como seu protocolo já foi gerado, <a href="#" onclick="window.location.reload(); return false;" style="color: #b45309; text-decoration: underline; font-weight: 800;">clique aqui para preencher novamente</a> e pode ignorar o e-mail anterior.
     </div>
   </div>
 
@@ -995,10 +999,6 @@
           <span class="modal-summary-label">Empresa / CNPJ:</span>
           <span class="modal-summary-value">${emp} (${cnpj})</span>
         </div>
-        <div class="modal-summary-row">
-          <span class="modal-summary-label">E-mail para Recibo:</span>
-          <span class="modal-summary-value" style="color:#2563eb;">${email}</span>
-        </div>
       `;
     } else {
       const count = parseInt(getVal('spos-qtd'), 10) || 1;
@@ -1037,10 +1037,6 @@
         <div class="modal-summary-row">
           <span class="modal-summary-label">Maquininhas:</span>
           <span class="modal-summary-value">${modalTerminaisHtml}</span>
-        </div>
-        <div class="modal-summary-row">
-          <span class="modal-summary-label">E-mail para Recibo:</span>
-          <span class="modal-summary-value" style="color:#2563eb;">${email}</span>
         </div>
       `;
     }
@@ -1156,32 +1152,14 @@
       hide($('mainHeader'));
       show($('successCard'));
 
-      // Se gerou documento oficial, exibe o botão de download
-      if (docxBlobCache) {
-        show($('box-download-docx'));
-        const btnDown = $('btn-download-docx');
-        if (btnDown) {
-          btnDown.onclick = () => {
-            const url = URL.createObjectURL(docxBlobCache);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = docxFilenameCache;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          };
-        }
-      } else {
-        hide($('box-download-docx'));
-      }
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbx-fteMqbsTIqoPNyjQZ1IPanpk5EUqDzuf8_TkhcPVkYHgrWosvOhZEQoYRKVkdDLl/exec';
 
-    const enviarParaGoogle = () => {
+    const enviarParaGoogle = (tokenRecaptcha = '') => {
+      payload.recaptchaToken = tokenRecaptcha;
+      
       fetch(GAS_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -1205,8 +1183,8 @@
     // 🛡️ Solicita o token invisível do Google reCAPTCHA antes de submeter
     if (typeof grecaptcha !== 'undefined') {
       grecaptcha.ready(function() {
-        grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function() {
-          enviarParaGoogle();
+        grecaptcha.execute('6LciqrktAAAAALJnt-rZO4Ywzmu1p0ozLnQi9BqI', {action: 'submit'}).then(function(token) {
+          enviarParaGoogle(token);
         }).catch(function() {
           enviarParaGoogle();
         });
