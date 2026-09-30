@@ -169,7 +169,6 @@
       border-color: #bfdbfe;
     }
 
-    .blur-tef { position: absolute; top: 25%; left: 33%; width: 34%; height: 6%; background: #1a1a1a; filter: blur(3px); border-radius: 2px; }
     .blur-spos { position: absolute; bottom: 8%; left: 34%; width: 32%; height: 5%; background: #111; filter: blur(3px); border-radius: 2px; }
     .product-name { font-size: 1.3rem; font-weight: 800; color: #016855; margin-top: 6px; }
     .product-desc { font-size: 0.85rem; color: #6b7280; line-height: 1.4; }
@@ -330,17 +329,8 @@
             <input type="radio" id="opt-tef" name="produto" value="TEF" required />
             <label for="opt-tef">
               <span class="badge-selected">✓ SELECIONADO</span>
-              <div class="product-img-box" style="position: relative;">
-                <img src="TEF.jpg" alt="Equipamento TEF" />
-                <div class="blur-tef"></div>
-                <!-- Indicador Visual do Fio/Cabo -->
-                <svg width="40" height="80" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; right: 8px; bottom: 10px; transform: rotate(15deg); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); opacity: 0.85;">
-                  <path d="M12 21v-4"></path>
-                  <path d="M12 17c0-2-3-2-3-4s3-2 3-4-3-2-3-4 3-2 3-4V3"></path>
-                  <rect x="10" y="2" width="4" height="4" rx="1" ry="1" fill="#4b5563"></rect>
-                  <!-- Plug connector -->
-                  <path d="M11 2v-2h2v2"></path>
-                </svg>
+              <div class="product-img-box">
+                <img src="PinPad.jpg" alt="Equipamento PinPad TEF" style="transform: scale(1.1); transition: transform 0.35s ease;" />
               </div>
               <span class="product-name">PinPad / TEF</span>
               <span class="product-desc" style="font-weight: 600; color: #0f172a;">Equipamento conectado ao computador</span>
